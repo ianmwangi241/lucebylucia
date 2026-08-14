@@ -6,7 +6,7 @@
 
 /*
  * LUCE BY LUCIA — design system
- * Hierarchy: Black -> Ivory -> Gold -> Blush. Gold/blush are accents only.
+ * Hierarchy: Black -> Ivory -> Gold -> Blush/Rose. Gold + rose are accents only.
  */
 
 @theme inline {
@@ -44,6 +44,7 @@
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-blush: var(--blush);
+  --color-rose: var(--rose);
   --color-stone: var(--stone);
 }
 
@@ -56,6 +57,7 @@
   --gold: oklch(0.72 0.11 89);
   --gold-soft: oklch(0.84 0.06 89);
   --blush: oklch(0.87 0.04 15);
+  --rose: oklch(0.72 0.1 10);
   --stone: oklch(0.9 0.008 80);
 
   --background: var(--ivory);
@@ -100,8 +102,8 @@
   }
 
   ::selection {
-    background: var(--gold);
-    color: var(--ink);
+    background: var(--rose);
+    color: var(--ivory);
   }
 
   :focus-visible {
@@ -151,11 +153,11 @@
   &:hover {
     background: transparent;
     color: var(--ink);
-    border-color: var(--gold);
+    border-color: var(--rose);
   }
 }
 
-/* Outline on dark surfaces with gold hover */
+/* Outline on dark surfaces with rose-gold hover */
 @utility btn-ghost-light {
   display: inline-flex;
   align-items: center;
@@ -170,8 +172,8 @@
   border: 1px solid color-mix(in oklab, var(--ivory) 45%, transparent);
   transition: all 300ms ease;
   &:hover {
-    border-color: var(--gold);
-    color: var(--gold-soft);
+    border-color: var(--rose);
+    color: var(--blush);
   }
 }
 
@@ -197,7 +199,7 @@
 @utility hairline-gold {
   height: 1px;
   width: 3.5rem;
-  background: var(--gold);
+  background: linear-gradient(90deg, var(--gold), var(--rose));
 }
 
 @utility reveal {
@@ -213,4 +215,42 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---------- Signature elements: monogram ribbon + marquee ---------- */
+
+@utility ribbon-vertical {
+  writing-mode: vertical-rl;
+  letter-spacing: 0.4em;
+}
+
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: luce-marquee 32s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+@keyframes luce-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Soft romantic glow used once, behind the hero headline */
+@utility blush-bloom {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--rose) 55%, transparent),
+    transparent 70%
+  );
+  filter: blur(60px);
 }

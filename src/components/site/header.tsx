@@ -29,9 +29,6 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
 
   return (
     <>
-      <div className="bg-ink text-ivory/70 py-2 text-center text-[10px] tracking-[0.28em] uppercase">
-        Complimentary Nairobi delivery over KSh 15,000 · M-Pesa at checkout
-      </div>
 
       <header
         className={`sticky top-0 z-40 transition-all duration-500 ${

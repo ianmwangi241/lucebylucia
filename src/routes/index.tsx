@@ -1,5 +1,9 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { motion, type Variants } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
+import { ProductCard } from "@/components/site/product-card";
+import { products } from "@/lib/products";
+
 import heroImg from "@/assets/hero.jpg";
 import collectionImg from "@/assets/collection.jpg";
 import storyImg from "@/assets/story.jpg";
@@ -9,8 +13,9 @@ import catTops from "@/assets/cat-tops.jpg";
 import catSets from "@/assets/cat-sets.jpg";
 import catJumpsuits from "@/assets/cat-jumpsuits.jpg";
 import detailImg from "@/assets/detail.jpg";
-import { ProductCard } from "@/components/site/product-card";
-import { products } from "@/lib/products";
+import p1 from "@/assets/p1.jpg";
+import p3 from "@/assets/p3.jpg";
+import p5 from "@/assets/p5.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,10 +26,7 @@ export const Route = createFileRoute("/")({
         content:
           "Elegant dresses, tailored sets and occasion wear designed in Nairobi. Shop the new collection in KSh with M-Pesa checkout and nationwide delivery.",
       },
-      {
-        property: "og:title",
-        content: "Luce by Lucia — The Art of Being You",
-      },
+      { property: "og:title", content: "Luce by Lucia — The Art of Being You" },
       {
         property: "og:description",
         content:
@@ -40,6 +42,13 @@ const CATEGORY_CARDS = [
   { title: "Tops", image: catTops },
   { title: "Two-Piece Sets", image: catSets },
   { title: "Occasion Wear", image: catJumpsuits },
+];
+
+const TICKER_ITEMS = [
+  "SMALL-RUN NAIROBI ATELIER",
+  "M-PESA CHECKOUT",
+  "NATIONWIDE DELIVERY",
+  "HAND-FINISHED IN-HOUSE",
 ];
 
 const REVIEWS = [
@@ -58,42 +67,87 @@ const REVIEWS = [
   },
 ];
 
-const SOCIAL = [
-  catDresses,
-  collectionImg,
-  catSets,
-  storyImg,
-  catTops,
-  detailImg,
-];
+const SOCIAL = [p1, collectionImg, p3, storyImg, p5, detailImg];
+
+// ---------------------------------------------------------------------------
+// Animation variants
+// ---------------------------------------------------------------------------
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const stagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const revealSection = {
+  initial: "hidden" as const,
+  whileInView: "visible" as const,
+  viewport: { once: true, margin: "-80px" },
+};
 
 function Home() {
   return (
     <>
-      {/* HERO */}
-      <section className="bg-ink relative">
-        <img
-          src={heroImg}
-          alt="Model wearing the Lucia black wrap dress in an architectural Nairobi space"
-          width={1600}
-          height={1920}
-          className="h-[78vh] w-full object-cover object-center opacity-90 lg:h-[92vh]"
-        />
-        <div className="from-ink/85 via-ink/25 absolute inset-0 bg-gradient-to-r to-transparent" />
+      {/* HERO — vertical monogram ribbon + soft rose bloom behind the headline */}
+      <section className="bg-ink relative overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 0.85, scale: 1 }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img
+            src={heroImg}
+            alt="Model wearing the Lucia black wrap dress in an architectural Nairobi space"
+            width={1600}
+            height={1920}
+            className="h-[80vh] w-full object-cover object-center lg:h-[94vh]"
+          />
+        </motion.div>
+        <div className="from-ink/90 via-ink/30 absolute inset-0 bg-gradient-to-r to-transparent" />
+
+        {/* signature: soft rose bloom, positioned behind where the headline sits */}
+        <div className="blush-bloom pointer-events-none absolute left-[6%] top-[38%] size-[420px] opacity-60" />
+
+        {/* signature: rotated monogram ribbon along the right edge, desktop only */}
+        <div className="text-ivory/40 ribbon-vertical eyebrow pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 lg:block">
+          LUCE · NAIROBI · EST. 2021
+        </div>
+
         <div className="absolute inset-0 flex items-end">
           <div className="mx-auto w-full max-w-[1600px] px-5 pb-14 lg:px-10 lg:pb-24">
-            <div className="reveal max-w-xl">
-              <p className="eyebrow text-gold-soft">New Season</p>
-              <h1 className="display-xl text-ivory mt-5">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              animate="visible"
+              className="relative max-w-xl"
+            >
+              <motion.p variants={fadeUp} className="eyebrow text-rose flex items-center gap-2">
+                <span className="bg-rose inline-block size-1.5 rounded-full" />
+                New Season
+              </motion.p>
+              <motion.h1 variants={fadeUp} className="display-xl text-ivory mt-5">
                 The Art of
                 <br />
-                Being You
-              </h1>
-              <p className="text-ivory/75 mt-6 max-w-md text-sm leading-relaxed sm:text-base">
+                Being <span className="text-gold-soft italic">You</span>
+              </motion.h1>
+              <motion.p
+                variants={fadeUp}
+                className="text-ivory/75 mt-6 max-w-md text-sm leading-relaxed sm:text-base"
+              >
                 Considered pieces cut in Nairobi for women who dress for
-                themselves — not for the room.
-              </p>
-              <div className="mt-9 flex flex-wrap items-center gap-4">
+                themselves — soft where it matters, sharp where it counts.
+              </motion.p>
+              <motion.div
+                variants={fadeUp}
+                className="mt-9 flex flex-wrap items-center gap-4"
+              >
                 <Link to="/shop" className="btn-ghost-light">
                   Shop the Collection
                 </Link>
@@ -103,16 +157,35 @@ function Home() {
                 >
                   View Lookbook
                 </Link>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
 
+      {/* MARQUEE TICKER */}
+      <div className="bg-ink border-rose/20 overflow-hidden border-y py-3">
+        <div className="marquee-track">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span
+              key={i}
+              className="text-gold-soft eyebrow flex items-center gap-6 whitespace-nowrap px-6"
+            >
+              {item}
+              <span className="bg-rose inline-block size-1 rounded-full" />
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* COLLECTION STORY — asymmetric */}
-      <section className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-32">
+      <motion.section
+        {...revealSection}
+        variants={stagger}
+        className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-32"
+      >
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
+          <motion.div variants={fadeUp} className="lg:col-span-7">
             <img
               src={collectionImg}
               alt="Two models in ivory and blush tailored co-ord sets"
@@ -121,8 +194,8 @@ function Home() {
               height={1760}
               className="aspect-[4/5] w-full object-cover"
             />
-          </div>
-          <div className="lg:col-span-5 lg:pl-6">
+          </motion.div>
+          <motion.div variants={fadeUp} className="lg:col-span-5 lg:pl-6">
             <p className="eyebrow text-muted-foreground">
               The Latest Collection
             </p>
@@ -136,62 +209,68 @@ function Home() {
             <Link to="/collections" className="btn-ink mt-9">
               Explore Collection
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* SHOP BY CATEGORY */}
-      <section className="border-t py-20 lg:py-28">
+      <section className="border-y py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-5 lg:px-10">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <motion.div
+            {...revealSection}
+            variants={fadeUp}
+            className="flex flex-wrap items-end justify-between gap-4"
+          >
             <h2 className="display-lg">Shop by Category</h2>
-            <Link
-              to="/shop"
-              className="link-gold text-[11px] tracking-[0.24em] uppercase"
-            >
+            <Link to="/shop" className="link-gold text-[11px] tracking-[0.24em] uppercase">
               View All
             </Link>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+          </motion.div>
+          <motion.div
+            {...revealSection}
+            variants={stagger}
+            className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6"
+          >
             {CATEGORY_CARDS.map((category) => (
-              <Link
-                key={category.title}
-                to="/shop"
-                search={{ category: category.title }}
-                className="group relative block overflow-hidden"
-              >
-                <img
-                  src={category.image}
-                  alt={`${category.title} category`}
-                  loading="lazy"
-                  width={900}
-                  height={1200}
-                  className="aspect-[3/4] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                />
-                <div className="from-ink/70 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="text-ivory font-display text-xl tracking-[0.12em] uppercase">
-                    {category.title}
-                  </h3>
-                  <span className="text-gold-soft mt-2 inline-flex items-center gap-2 text-[10px] tracking-[0.26em] uppercase opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    Shop Category <ArrowRight className="size-3" />
-                  </span>
-                </div>
-              </Link>
+              <motion.div key={category.title} variants={fadeUp}>
+                <Link
+                  to="/shop"
+                  search={{ category: category.title }}
+                  className="group relative block overflow-hidden"
+                >
+                  <img
+                    src={category.image}
+                    alt={`${category.title} category`}
+                    loading="lazy"
+                    width={900}
+                    height={1200}
+                    className="aspect-[3/4] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                  />
+                  <div className="from-ink/75 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-5">
+                    <h3 className="text-ivory font-display text-xl tracking-[0.12em] uppercase">
+                      {category.title}
+                    </h3>
+                    <span className="text-blush mt-2 inline-flex items-center gap-2 text-[10px] tracking-[0.26em] uppercase opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      Shop Category <ArrowRight className="size-3" />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* NEW ARRIVALS */}
       <section className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-28">
-        <div className="text-center">
+        <motion.div {...revealSection} variants={fadeUp} className="text-center">
           <p className="eyebrow text-muted-foreground">New Arrivals</p>
           <h2 className="display-lg mt-4">Just Landed</h2>
           <p className="text-muted-foreground mx-auto mt-4 max-w-md text-sm">
             Discover the latest pieces from Luce by Lucia.
           </p>
-        </div>
+        </motion.div>
         <div className="mt-14 grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
           {products.slice(0, 4).map((product) => (
             <ProductCard key={product.slug} product={product} />
@@ -202,8 +281,8 @@ function Home() {
       {/* AFTER DARK DROP */}
       <section className="bg-ink text-ivory">
         <div className="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-20 lg:grid-cols-2 lg:px-10 lg:py-0">
-          <div className="lg:py-32">
-            <p className="eyebrow text-gold-soft">The New Drop</p>
+          <motion.div {...revealSection} variants={fadeUp} className="lg:py-32">
+            <p className="eyebrow text-rose">The New Drop</p>
             <h2 className="display-xl mt-5">After Dark</h2>
             <div className="hairline-gold mt-8" />
             <p className="text-ivory/65 mt-8 max-w-sm text-sm leading-loose">
@@ -214,30 +293,46 @@ function Home() {
             <Link to="/collections" className="btn-ghost-light mt-10">
               Shop the Drop
             </Link>
-          </div>
-          <img
-            src={afterDarkImg}
-            alt="Model in a black evening gown lit against darkness"
-            loading="lazy"
-            width={1600}
-            height={1104}
-            className="h-full w-full object-cover lg:min-h-[80vh]"
-          />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 1.05 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <img
+              src={afterDarkImg}
+              alt="Model in a black evening gown lit against darkness"
+              loading="lazy"
+              width={1600}
+              height={1104}
+              className="h-full w-full object-cover lg:min-h-[80vh]"
+            />
+          </motion.div>
         </div>
       </section>
 
-      {/* BRAND STORY */}
-      <section className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-32">
+      {/* BRAND STORY — with a small handwritten-feel pull-quote in rose */}
+      <motion.section
+        {...revealSection}
+        variants={stagger}
+        className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-32"
+      >
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-          <img
-            src={storyImg}
-            alt="Model seated in a blush satin slip dress"
-            loading="lazy"
-            width={1312}
-            height={1600}
-            className="aspect-[4/5] w-full object-cover"
-          />
-          <div>
+          <motion.div variants={fadeUp} className="relative">
+            <img
+              src={storyImg}
+              alt="Model seated in a blush satin slip dress"
+              loading="lazy"
+              width={1312}
+              height={1600}
+              className="aspect-[4/5] w-full object-cover"
+            />
+            <p className="text-rose bg-ivory border-rose/30 absolute -bottom-6 left-6 max-w-[220px] border px-5 py-4 font-display text-lg italic shadow-sm">
+              &ldquo;We design to reveal you.&rdquo;
+            </p>
+          </motion.div>
+          <motion.div variants={fadeUp}>
             <p className="eyebrow text-muted-foreground">The Luce Woman</p>
             <h2 className="display-lg mt-5">
               Confident. Elegant.
@@ -257,25 +352,26 @@ function Home() {
             <Link to="/about" className="btn-ink mt-9">
               Discover Our Story
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* THE LUCE EDIT */}
-      <section className="bg-secondary/40 border-y py-20 lg:py-28">
+      <section className="bg-secondary/30 border-y py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-5 lg:px-10">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <motion.div
+            {...revealSection}
+            variants={fadeUp}
+            className="flex flex-wrap items-end justify-between gap-4"
+          >
             <div>
               <p className="eyebrow text-muted-foreground">Bestsellers</p>
               <h2 className="display-lg mt-4">The Luce Edit</h2>
             </div>
-            <Link
-              to="/shop"
-              className="link-gold text-[11px] tracking-[0.24em] uppercase"
-            >
+            <Link to="/shop" className="link-gold text-[11px] tracking-[0.24em] uppercase">
               View All
             </Link>
-          </div>
+          </motion.div>
           <div className="mt-14 grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
             {products.slice(2, 6).map((product) => (
               <ProductCard key={product.slug} product={product} />
@@ -286,37 +382,52 @@ function Home() {
 
       {/* REVIEWS */}
       <section className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-28">
-        <h2 className="display-lg text-center">Loved by the Luce Woman</h2>
-        <div className="mt-14 grid gap-10 lg:grid-cols-3">
+        <motion.h2 {...revealSection} variants={fadeUp} className="display-lg text-center">
+          Loved by the Luce Woman
+        </motion.h2>
+        <motion.div
+          {...revealSection}
+          variants={stagger}
+          className="mt-14 grid gap-10 lg:grid-cols-3"
+        >
           {REVIEWS.map((review) => (
-            <figure key={review.name} className="border-t pt-8">
+            <motion.figure
+              key={review.name}
+              variants={fadeUp}
+              className="border-rose/40 border-t-2 pt-8"
+            >
               <div className="text-gold flex gap-1">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star key={index} className="size-3.5 fill-current" />
                 ))}
               </div>
               <blockquote className="font-display mt-5 text-xl leading-snug">
-                “{review.quote}”
+                &ldquo;{review.quote}&rdquo;
               </blockquote>
               <figcaption className="text-muted-foreground mt-5 text-[11px] tracking-[0.2em] uppercase">
                 — {review.name}
               </figcaption>
-            </figure>
+            </motion.figure>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* SOCIAL */}
       <section className="pb-20 lg:pb-28">
         <div className="mx-auto max-w-[1600px] px-5 lg:px-10">
-          <div className="text-center">
+          <motion.div {...revealSection} variants={fadeUp} className="text-center">
             <p className="eyebrow text-muted-foreground">@lucebylucia</p>
             <h2 className="display-lg mt-4">Follow the Luce World</h2>
-          </div>
-          <div className="mt-12 grid grid-cols-3 gap-2 lg:grid-cols-6 lg:gap-3">
+          </motion.div>
+          <motion.div
+            {...revealSection}
+            variants={stagger}
+            className="mt-12 grid grid-cols-3 gap-2 lg:grid-cols-6 lg:gap-3"
+          >
             {SOCIAL.map((image, index) => (
-              <a
+              <motion.a
                 key={index}
+                variants={fadeUp}
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -329,17 +440,21 @@ function Home() {
                   loading="lazy"
                   className="aspect-square w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <span className="bg-ink/30 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </a>
+                <span className="bg-rose/30 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </motion.a>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* NEWSLETTER */}
       <section className="bg-ink text-ivory">
-        <div className="mx-auto max-w-2xl px-5 py-20 text-center lg:py-28">
-          <p className="eyebrow text-gold-soft">Newsletter</p>
+        <motion.div
+          {...revealSection}
+          variants={fadeUp}
+          className="mx-auto max-w-2xl px-5 py-20 text-center lg:py-28"
+        >
+          <p className="eyebrow text-rose">Newsletter</p>
           <h2 className="display-lg mt-5">Join the Luce List</h2>
           <p className="text-ivory/60 mt-5 text-sm leading-relaxed">
             Be the first to discover new collections, exclusive drops and
@@ -357,13 +472,13 @@ function Home() {
               type="email"
               required
               placeholder="Your email address"
-              className="border-ivory/30 text-ivory placeholder:text-ivory/40 focus:border-gold flex-1 border-b bg-transparent px-1 py-4 text-sm outline-none"
+              className="border-ivory/30 text-ivory placeholder:text-ivory/40 focus:border-rose flex-1 border-b bg-transparent px-1 py-4 text-sm outline-none transition-colors"
             />
             <button type="submit" className="btn-ghost-light">
               Join
             </button>
           </form>
-        </div>
+        </motion.div>
       </section>
     </>
   );
