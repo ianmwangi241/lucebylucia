@@ -1,0 +1,216 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * LUCE BY LUCIA — design system
+ * Hierarchy: Black -> Ivory -> Gold -> Blush. Gold/blush are accents only.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ivory: var(--ivory);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-blush: var(--blush);
+  --color-stone: var(--stone);
+}
+
+:root {
+  --radius: 0.125rem;
+
+  --ink: oklch(0.15 0.004 60);
+  --ink-soft: oklch(0.24 0.006 60);
+  --ivory: oklch(0.972 0.008 85);
+  --gold: oklch(0.72 0.11 89);
+  --gold-soft: oklch(0.84 0.06 89);
+  --blush: oklch(0.87 0.04 15);
+  --stone: oklch(0.9 0.008 80);
+
+  --background: var(--ivory);
+  --foreground: var(--ink);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--ink);
+  --popover: var(--ivory);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--ivory);
+  --secondary: var(--stone);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.94 0.006 80);
+  --muted-foreground: oklch(0.5 0.01 70);
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.55 0.19 25);
+  --destructive-foreground: var(--ivory);
+  --border: oklch(0.88 0.008 80);
+  --input: oklch(0.88 0.008 80);
+  --ring: var(--gold);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+/* Editorial eyebrow label */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  font-size: clamp(2.75rem, 7vw, 6rem);
+}
+
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1;
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+}
+
+/* Minimal luxury button: solid ink */
+@utility btn-ink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--ink);
+  color: var(--ivory);
+  padding: 1rem 2.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  transition: all 300ms ease;
+  &:hover {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+}
+
+/* Outline on dark surfaces with gold hover */
+@utility btn-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--ivory);
+  padding: 1rem 2.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  border: 1px solid color-mix(in oklab, var(--ivory) 45%, transparent);
+  transition: all 300ms ease;
+  &:hover {
+    border-color: var(--gold);
+    color: var(--gold-soft);
+  }
+}
+
+/* Gold underline reveal for links */
+@utility link-gold {
+  position: relative;
+  transition: color 250ms ease;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 1px;
+    width: 0;
+    background: var(--gold);
+    transition: width 300ms ease;
+  }
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+@utility hairline-gold {
+  height: 1px;
+  width: 3.5rem;
+  background: var(--gold);
+}
+
+@utility reveal {
+  animation: luce-fade 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes luce-fade {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
