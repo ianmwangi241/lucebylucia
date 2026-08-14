@@ -141,8 +141,7 @@ function Home() {
                 variants={fadeUp}
                 className="text-ivory/75 mt-6 max-w-md text-sm leading-relaxed sm:text-base"
               >
-                Considered pieces cut in Nairobi for women who dress for
-                themselves — soft where it matters, sharp where it counts.
+                Womenswear brand offering premium, ready-to-wear clothing designed to make you look and feel your absolute best.
               </motion.p>
               <motion.div
                 variants={fadeUp}

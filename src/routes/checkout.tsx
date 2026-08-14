@@ -10,12 +10,12 @@ export const Route = createFileRoute("/checkout")({
       {
         name: "description",
         content:
-          "Secure Luce by Lucia checkout. Pay with M-Pesa or card, choose Nairobi same-day or nationwide delivery, all prices in KSh.",
+          "Secure Luce by Lucia checkout. Pay with M-Pesa or card, choose standard or matatu delivery, all prices in KSh.",
       },
       { property: "og:title", content: "Checkout — Luce by Lucia" },
       {
         property: "og:description",
-        content: "Pay with M-Pesa or card. Nairobi same-day delivery available.",
+        content: "Pay with M-Pesa or card. Flexible delivery options available.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -37,10 +37,13 @@ const COUNTIES = [
 function Checkout() {
   const { lines, subtotal } = useCart();
   const [county, setCounty] = useState("Nairobi");
+  const [deliveryType, setDeliveryType] = useState("standard");
   const [method, setMethod] = useState("mpesa");
   const [placed, setPlaced] = useState(false);
 
-  const delivery = subtotal === 0 ? 0 : county === "Nairobi" ? 300 : 550;
+  // Standard delivery is 500 KSh (only available for Nairobi and its environs).
+  // Matatu delivery cost can default to 550 or standard rates depending on county, let's keep logic clean:
+  const delivery = subtotal === 0 ? 0 : deliveryType === "standard" ? 500 : county === "Nairobi" ? 300 : 550;
   const total = subtotal + delivery;
 
   if (placed) {
@@ -72,8 +75,8 @@ function Checkout() {
           }}
         >
           <Fieldset legend="Contact information">
-            <Field label="Full name" name="name" />
-            <Field label="Email address" name="email" type="email" />
+            <Field label="Full name" name="name" placeholder="e.g. Amina Mohamed" />
+            <Field label="Email address" name="email" type="email" placeholder="e.g. amina@example.com" />
             <Field
               label="Phone (M-Pesa)"
               name="phone"
@@ -89,26 +92,43 @@ function Checkout() {
               <select
                 value={county}
                 onChange={(event) => setCounty(event.target.value)}
-                className="focus:border-gold mt-2 w-full border-b bg-transparent py-3 text-sm outline-none"
+                className="mt-2 w-full rounded-md border border-input bg-background px-3.5 py-3 text-sm outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold"
               >
                 {COUNTIES.map((item) => (
-                  <option key={item}>{item}</option>
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
               </select>
             </label>
-            <Field label="Area / estate" name="area" />
+            <Field label="Area / estate" name="area" placeholder="e.g. Kilimani, Argwings Kodhek Rd" />
+            <Field label="Apartment / building name" name="apartment" placeholder="e.g. Sunrise Apartments" required={false} />
+            <Field label="House number / Door number" name="houseNumber" placeholder="e.g. Door 4B or House No. 12" required={false} />
             <Field
               label="Delivery notes (optional)"
               name="notes"
               required={false}
+              placeholder="e.g. Leave with reception / Gate color"
             />
           </Fieldset>
 
           <Fieldset legend="Delivery method">
-            <p className="text-muted-foreground text-sm leading-loose">
-              {county === "Nairobi"
-                ? "Nairobi: same-day for orders before 11am, otherwise next day. KSh 300."
-                : `${county}: courier to your nearest agent in 2–4 working days. KSh 550.`}
+            <label className="block">
+              <span className="eyebrow text-muted-foreground">Choose delivery type</span>
+              <select
+                value={deliveryType}
+                onChange={(event) => setDeliveryType(event.target.value)}
+                className="mt-2 w-full rounded-md border border-input bg-background px-3.5 py-3 text-sm outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold"
+              >
+                <option value="standard">Standard Delivery (Nairobi & environs only) — KSh 500</option>
+                <option value="matatu">Matatu / Shuttle Delivery</option>
+              </select>
+            </label>
+
+            <p className="text-muted-foreground text-sm leading-loose mt-3">
+              {deliveryType === "standard"
+                ? "Standard delivery is only available for Nairobi and its environs. Cost: KSh 500."
+                : "Note: The product will be taken to the nearest shuttle offices for collection."}
             </p>
           </Fieldset>
 
@@ -123,10 +143,10 @@ function Checkout() {
                   type="button"
                   onClick={() => setMethod(option.id)}
                   aria-pressed={method === option.id}
-                  className={`border px-6 py-4 text-[11px] tracking-[0.22em] uppercase ${
+                  className={`rounded-md border px-6 py-4 text-[11px] tracking-[0.22em] uppercase transition-all ${
                     method === option.id
-                      ? "border-ink bg-ink text-ivory"
-                      : "hover:border-gold"
+                      ? "border-ink bg-ink text-ivory shadow-sm"
+                      : "border-input bg-background hover:border-gold"
                   }`}
                 >
                   {option.label}
@@ -145,7 +165,7 @@ function Checkout() {
           </button>
         </form>
 
-        <aside className="bg-secondary/40 h-fit p-7 lg:p-9">
+        <aside className="bg-secondary/40 h-fit rounded-lg p-7 lg:p-9 border border-border/60">
           <h2 className="eyebrow">Order Summary</h2>
           <div className="mt-7 space-y-5">
             {lines.length === 0 && (
@@ -158,20 +178,20 @@ function Checkout() {
               </p>
             )}
             {lines.map((line) => (
-              <div key={line.id} className="flex gap-4">
+              <div key={line.id} className="flex gap-4 items-center">
                 <img
                   src={line.image}
                   alt={line.name}
                   loading="lazy"
-                  className="h-24 w-18 object-cover"
+                  className="h-24 w-18 object-cover rounded"
                 />
                 <div className="flex-1 text-sm">
-                  <p>{line.name}</p>
+                  <p className="font-medium">{line.name}</p>
                   <p className="text-muted-foreground mt-1 text-xs tracking-[0.16em] uppercase">
-                    {line.color} / {line.size} · {line.qty}
+                    {line.color} / {line.size} · Qty {line.qty}
                   </p>
                 </div>
-                <p className="text-sm">{formatKsh(line.price * line.qty)}</p>
+                <p className="text-sm font-medium">{formatKsh(line.price * line.qty)}</p>
               </div>
             ))}
           </div>
@@ -194,7 +214,7 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="text-muted-foreground flex justify-between">
       <dt>{label}</dt>
-      <dd className="text-foreground">{value}</dd>
+      <dd className="text-foreground font-medium">{value}</dd>
     </div>
   );
 }
@@ -208,7 +228,7 @@ function Fieldset({
 }) {
   return (
     <fieldset className="space-y-5 border-t pt-7">
-      <legend className="eyebrow">{legend}</legend>
+      <legend className="eyebrow font-semibold">{legend}</legend>
       {children}
     </fieldset>
   );
@@ -238,7 +258,7 @@ function Field({
         required={required}
         placeholder={placeholder}
         pattern={pattern}
-        className="focus:border-gold mt-2 w-full border-b bg-transparent py-3 text-sm outline-none"
+        className="mt-2 w-full rounded-md border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-gold focus:ring-1 focus:ring-gold"
       />
     </label>
   );
