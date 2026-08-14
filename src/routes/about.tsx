@@ -6,17 +6,17 @@ import collectionImg from "@/assets/collection.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Our Story — A Nairobi Fashion House | Luce by Lucia" },
+      { title: "About Us — Luce by Lucia" },
       {
         name: "description",
         content:
-          "Luce by Lucia designs, fits and finishes womenswear in a Nairobi studio. Read the story behind the house and how each piece is made.",
+          "Shop premium womenswear designed, fitted, and crafted in Nairobi. Discover limited-run collections made for real bodies.",
       },
-      { property: "og:title", content: "Our Story — Luce by Lucia" },
+      { property: "og:title", content: "About Us — Luce by Lucia" },
       {
         property: "og:description",
         content:
-          "Designed, fitted and finished in a Nairobi studio, in small runs, on real bodies.",
+          "Premium Nairobi-made womenswear, crafted in small batches and tailored for everyday elegance.",
       },
     ],
   }),
@@ -25,16 +25,16 @@ export const Route = createFileRoute("/about")({
 
 const PILLARS = [
   {
-    title: "Cut in Nairobi",
-    copy: "Every pattern is drafted and sewn in our Kilimani studio by a team of eight.",
+    title: "Made in Nairobi",
+    copy: "Every piece is proudly cut, sewn, and finished right here in our Kilimani studio by skilled local artisans.",
   },
   {
-    title: "Small Runs",
-    copy: "We produce in limited quantities so nothing is wasted and nothing is everywhere.",
+    title: "Limited Batches",
+    copy: "We stock in small runs to guarantee exclusivity, prevent mass overproduction, and maintain strict quality control.",
   },
   {
-    title: "Fitted on Real Bodies",
-    copy: "Each style is fitted across XS–XXL before it ever reaches the collection.",
+    title: "Tailored for Real Bodies",
+    copy: "Every design is tested and fitted across sizes XS–XXL to ensure a flawless fit that flatters your shape.",
   },
 ];
 
@@ -44,35 +44,28 @@ function About() {
       <header className="relative">
         <img
           src={collectionImg}
-          alt="Luce by Lucia campaign portrait"
+          alt="Luce by Lucia collection showcase"
           className="h-[52vh] w-full object-cover"
         />
         <div className="bg-ink/45 absolute inset-0" />
         <div className="absolute inset-0 flex items-center justify-center px-5 text-center">
           <div>
-            <p className="eyebrow text-gold-soft">Our Story</p>
-            <h1 className="display-xl text-ivory mt-5">Luce, meaning light</h1>
+            <p className="eyebrow text-gold-soft">Welcome to Luce</p>
+            <h1 className="display-xl text-ivory mt-5">Effortless Style, Exceptional Quality</h1>
           </div>
         </div>
       </header>
 
-      <section className="mx-auto max-w-3xl px-5 py-20 lg:py-28">
-        <div className="hairline-gold mx-auto" />
+      <section className="mx-auto max-w-3xl px-5 py-20 lg:py-28 text-center lg:text-left">
+        <div className="hairline-gold mx-auto lg:mx-0" />
         <p className="font-display mt-10 text-2xl leading-relaxed lg:text-3xl">
-          Lucia started this house with three machines, a rented room in
-          Kilimani, and a stubborn idea: that a woman should never have to
-          change her body to fit a garment.
+          Luce by Lucia is an online womenswear brand offering premium, ready-to-wear clothing designed to make you look and feel your absolute best.
         </p>
         <p className="text-muted-foreground mt-8 text-sm leading-loose">
-          We began by making one dress, again and again, until it fell correctly
-          on every woman who tried it. That dress became the Lucia Satin Slip —
-          still the piece our customers return for. Everything since has been
-          built the same way: drafted by hand, fitted across six sizes,
-          finished in-house, released in small numbers.
+          Shopping for clothes that actually fit well shouldn't be a compromise. Based in Nairobi, we curate and produce high-end apparel focusing on clean silhouettes, durable fabrics, and meticulous attention to detail. Whether you are dressing up for a special evening out or upgrading your daily wardrobe, our pieces deliver reliable style and comfort.
         </p>
         <p className="text-muted-foreground mt-6 text-sm leading-loose">
-          We are Kenyan, and we make clothing that competes anywhere. Not
-          because it references somewhere else — because the work is good.
+          We keep our online catalog fresh, premium, and accessible. Skip the mass-market clutter and invest in clothing designed to hold its place as a favorite in your closet for years to come.
         </p>
       </section>
 
@@ -80,19 +73,18 @@ function About() {
         <div className="mx-auto grid max-w-[1600px] items-center gap-12 px-5 py-20 lg:grid-cols-2 lg:gap-20 lg:px-10 lg:py-28">
           <img
             src={storyImg}
-            alt="Model wearing a blush satin slip dress"
+            alt="Model wearing a Luce by Lucia outfit"
             loading="lazy"
             className="aspect-[4/5] w-full object-cover"
           />
           <div>
-            <p className="eyebrow text-gold-soft">The Luce Woman</p>
+            <p className="eyebrow text-gold-soft">Why Shop With Us</p>
             <h2 className="display-lg mt-5">
-              Confident. Elegant. Unforgettable.
+              Clothing That Works for Your Lifestyle
             </h2>
             <div className="hairline-gold mt-7" />
             <p className="text-ivory/65 mt-7 text-sm leading-loose">
-              She dresses for herself. She keeps pieces for years. She notices a
-              hem, a lining, a covered button. We design for her attention.
+              You deserve clothes made with care. From sturdy, high-grade stitching to comfortable linings and flattering cuts, every item in our shop is selected and built to meet high standards. Browse our catalog today and find your next favorite outfit.
             </p>
             <Link to="/shop" className="btn-ghost-light mt-9">
               Shop the Collection
@@ -102,17 +94,21 @@ function About() {
       </section>
 
       <section className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-28">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20 items-center">
           <img
             src={detailImg}
-            alt="Close detail of black satin with gold stitching"
+            alt="Close up of fabric quality and stitching"
             loading="lazy"
             className="aspect-[3/4] w-full object-cover"
           />
           <div className="space-y-10 lg:pt-8">
+            <div className="border-b pb-4">
+              <p className="eyebrow text-gold-soft">The Standard</p>
+              <h3 className="font-display text-3xl mt-2">What Sets Us Apart</h3>
+            </div>
             {PILLARS.map((pillar) => (
               <div key={pillar.title} className="border-t pt-6">
-                <h3 className="font-display text-2xl">{pillar.title}</h3>
+                <h4 className="font-display text-2xl">{pillar.title}</h4>
                 <p className="text-muted-foreground mt-3 text-sm leading-loose">
                   {pillar.copy}
                 </p>

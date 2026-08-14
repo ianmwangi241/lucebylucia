@@ -45,10 +45,10 @@ const CATEGORY_CARDS = [
 ];
 
 const TICKER_ITEMS = [
-  "SMALL-RUN NAIROBI ATELIER",
+  "ELEGANT",
   "M-PESA CHECKOUT",
   "NATIONWIDE DELIVERY",
-  "HAND-FINISHED IN-HOUSE",
+  "STYLISH",
 ];
 
 const REVIEWS = [
@@ -341,16 +341,13 @@ function Home() {
             </h2>
             <div className="hairline-gold mt-7" />
             <p className="text-muted-foreground mt-7 text-sm leading-loose">
-              Luce began in a small Nairobi studio with one belief: a garment
-              should meet the woman where she is. Every piece is drafted,
-              fitted and finished in-house, in small runs, on real bodies of
-              every shape.
+              Luce by Lucia is an online womenswear brand offering premium, ready-to-wear clothing designed to make you look and feel your absolute best.
             </p>
             <p className="text-muted-foreground mt-4 text-sm leading-loose">
-              We do not design to correct you. We design to reveal you.
+              We keep our online catalog fresh, premium, and accessible. Skip the mass-market clutter and invest in clothing designed to hold its place as a favorite in your closet for years to come.
             </p>
             <Link to="/about" className="btn-ink mt-9">
-              Discover Our Story
+              Discover Our Brand
             </Link>
           </motion.div>
         </div>
