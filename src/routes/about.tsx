@@ -1,7 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import storyImg from "@/assets/story.jpg";
-import detailImg from "@/assets/detail.jpg";
-import collectionImg from "@/assets/collection.jpg";
+import storyImg from "@/assets/sculpt-jumpsuit.jpg";
+import detailImg from "@/assets/packaging.jpg";
+import collectionImg from "@/assets/signature-1.jpg";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/about")({
 const PILLARS = [
   {
     title: "Made in Nairobi",
-    copy: "Every piece is proudly cut, sewn, and finished right here in our Kilimani studio by skilled local artisans.",
+    copy: "Every piece is proudly cut, sewn, and finished right here in our local studio by skilled artisans.",
   },
   {
     title: "Limited Batches",
@@ -62,7 +62,7 @@ function About() {
           Luce by Lucia is an online womenswear brand offering premium, ready-to-wear clothing designed to make you look and feel your absolute best.
         </p>
         <p className="text-muted-foreground mt-8 text-sm leading-loose">
-          Shopping for clothes that actually fit well shouldn't be a compromise. Based in Nairobi, we curate and produce high-end apparel focusing on clean silhouettes, durable fabrics, and meticulous attention to detail. Whether you are dressing up for a special evening out or upgrading your daily wardrobe, our pieces deliver reliable style and comfort.
+          Shopping for clothes that actually fit well shouldn&apos;t be a compromise. Based in Nairobi, we curate and produce high-end apparel focusing on clean silhouettes, durable fabrics, and meticulous attention to detail. Whether you are dressing up for a special evening out or upgrading your daily wardrobe, our pieces deliver reliable style and comfort.
         </p>
         <p className="text-muted-foreground mt-6 text-sm leading-loose">
           We keep our online catalog fresh, premium, and accessible. Skip the mass-market clutter and invest in clothing designed to hold its place as a favorite in your closet for years to come.
@@ -73,7 +73,7 @@ function About() {
         <div className="mx-auto grid max-w-[1600px] items-center gap-12 px-5 py-20 lg:grid-cols-2 lg:gap-20 lg:px-10 lg:py-28">
           <img
             src={storyImg}
-            alt="Model wearing a Luce by Lucia outfit"
+            alt="Model wearing a Luce by Lucia sculpt jumpsuit"
             loading="lazy"
             className="aspect-[4/5] w-full object-cover"
           />
@@ -97,7 +97,7 @@ function About() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20 items-center">
           <img
             src={detailImg}
-            alt="Close up of fabric quality and stitching"
+            alt="Packaging and brand details"
             loading="lazy"
             className="aspect-[3/4] w-full object-cover"
           />

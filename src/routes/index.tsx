@@ -4,18 +4,18 @@ import { ArrowRight, Star } from "lucide-react";
 import { ProductCard } from "@/components/site/product-card";
 import { products } from "@/lib/products";
 
-import heroImg from "@/assets/hero.jpg";
-import collectionImg from "@/assets/collection.jpg";
-import storyImg from "@/assets/story.jpg";
-import afterDarkImg from "@/assets/afterdark.jpg";
-import catDresses from "@/assets/cat-dresses.jpg";
-import catTops from "@/assets/cat-tops.jpg";
-import catSets from "@/assets/cat-sets.jpg";
-import catJumpsuits from "@/assets/cat-jumpsuits.jpg";
-import detailImg from "@/assets/detail.jpg";
-import p1 from "@/assets/p1.jpg";
-import p3 from "@/assets/p3.jpg";
-import p5 from "@/assets/p5.jpg";
+import heroImg from "@/assets/aura-set-long.jpg";
+import collectionImg from "@/assets/signature-1.jpg";
+import storyImg from "@/assets/sculpt-jumpsuit.jpg";
+import afterDarkImg from "@/assets/everyday-set-short-5.jpg";
+import aurasetshort1 from "@/assets/aura-set-short-1.jpg";
+import everydaysetshort4 from "@/assets/everyday-set-long-1.jpg";
+import signature4 from "@/assets/signature-1.jpg";
+import sculpt3 from "@/assets/sculpt-jumpsuit.jpg";
+import zola1 from "@/assets/zola-1.jpg";
+import sahara4 from "@/assets/sahara.jpg";
+import aurasetlong3 from "@/assets/aura-set-long-3.jpg";
+import everydaysetlong1 from "@/assets/everyday-set-long-1.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Elegant dresses, tailored sets and occasion wear designed in Nairobi. Shop the new collection in KSh with M-Pesa checkout and nationwide delivery.",
+          "Elegant dresses, active & lounge sets and occasion wear designed in Nairobi. Shop the new collection in KSh with M-Pesa checkout and nationwide delivery.",
       },
       { property: "og:title", content: "Luce by Lucia — The Art of Being You" },
       {
@@ -38,10 +38,14 @@ export const Route = createFileRoute("/")({
 });
 
 const CATEGORY_CARDS = [
-  { title: "Dresses", image: catDresses },
-  { title: "Tops", image: catTops },
-  { title: "Two-Piece Sets", image: catSets },
-  { title: "Occasion Wear", image: catJumpsuits },
+  { title: "Sahara", image: sahara4 },
+  { title: "Aura Set Short", image: aurasetshort1 },
+  { title: "Aura Set Long", image: aurasetlong3 },
+  { title: "Everyday Set Short", image: everydaysetshort4 },
+  { title: "Zola", image: zola1 },
+  { title: "Signature", image: signature4 },
+  { title: "Sculpt Jumpsuit", image: sculpt3 },
+  { title: "Everyday Set Long", image: everydaysetlong1 },
 ];
 
 const TICKER_ITEMS = [
@@ -58,16 +62,16 @@ const REVIEWS = [
   },
   {
     quote:
-      "The satin dress arrived next day and looked far more expensive than it was.",
+      "The set arrived next day and looked far more striking than expected.",
     name: "Verified Customer, Kisumu",
   },
   {
-    quote: "Their WhatsApp team helped me pick my size. Faultless service.",
+    quote: "Their team helped me pick my size. Faultless service.",
     name: "Verified Customer, Mombasa",
   },
 ];
 
-const SOCIAL = [p1, collectionImg, p3, storyImg, p5, detailImg];
+const SOCIAL = [aurasetlong3, collectionImg, sahara4, afterDarkImg, sculpt3, zola1];
 
 // ---------------------------------------------------------------------------
 // Animation variants
@@ -104,7 +108,7 @@ function Home() {
         >
           <img
             src={heroImg}
-            alt="Model wearing the Lucia black wrap dress in an architectural Nairobi space"
+            alt="Model wearing the Aura long set in an architectural Nairobi space"
             width={1600}
             height={1920}
             className="h-[80vh] w-full object-cover object-center lg:h-[94vh]"
@@ -187,7 +191,7 @@ function Home() {
           <motion.div variants={fadeUp} className="lg:col-span-7">
             <img
               src={collectionImg}
-              alt="Two models in ivory and blush tailored co-ord sets"
+              alt="Models in signature co-ord sets"
               loading="lazy"
               width={1408}
               height={1760}
@@ -201,8 +205,7 @@ function Home() {
             <h2 className="display-lg mt-5">Made for the Moment</h2>
             <div className="hairline-gold mt-7" />
             <p className="text-muted-foreground mt-7 text-sm leading-loose">
-              Fluid crepe, sandwashed silk and knife pleats in a palette of
-              ivory, blush and black. Twelve pieces designed to be layered,
+              Fluid knits, stretch ribbed fabrics and comfortable silhouettes designed to be layered,
               broken apart and worn far beyond a single occasion.
             </p>
             <Link to="/collections" className="btn-ink mt-9">
@@ -285,8 +288,7 @@ function Home() {
             <h2 className="display-xl mt-5">After Dark</h2>
             <div className="hairline-gold mt-8" />
             <p className="text-ivory/65 mt-8 max-w-sm text-sm leading-loose">
-              Eight pieces in black, champagne and midnight satin. Cut for
-              evenings that ask a little more of you. Limited runs — once
+              Striking pieces designed for evenings that ask a little more of you. Limited runs — once
               they&apos;re gone, they&apos;re gone.
             </p>
             <Link to="/collections" className="btn-ghost-light mt-10">
@@ -301,7 +303,7 @@ function Home() {
           >
             <img
               src={afterDarkImg}
-              alt="Model in a black evening gown lit against darkness"
+              alt="Packaging and evening wear drop"
               loading="lazy"
               width={1600}
               height={1104}
@@ -321,7 +323,7 @@ function Home() {
           <motion.div variants={fadeUp} className="relative">
             <img
               src={storyImg}
-              alt="Model seated in a blush satin slip dress"
+              alt="Model seated in a sculpt jumpsuit"
               loading="lazy"
               width={1312}
               height={1600}

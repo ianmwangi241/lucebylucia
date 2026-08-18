@@ -1,23 +1,24 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import collectionImg from "@/assets/collection.jpg";
-import afterDarkImg from "@/assets/afterdark.jpg";
+import collectionImg from "@/assets/signature-1.jpg";
+import afterDarkImg from "@/assets/sculpt-jumpsuit.jpg";
+import activeLoungeImg from "@/assets/aura-set-long.jpg";
 import { ProductCard } from "@/components/site/product-card";
 import { products } from "@/lib/products";
 
 export const Route = createFileRoute("/collections")({
   head: () => ({
     meta: [
-      { title: "Collections — Made For The Moment & After Dark | Luce by Lucia" },
+      { title: "Collections — Made For The Moment, After Dark & Active & Lounge | Luce by Lucia" },
       {
         name: "description",
         content:
-          "Explore Luce by Lucia collections: Made For The Moment daywear and the After Dark evening drop, designed and cut in Nairobi.",
+          "Explore Luce by Lucia collections: Made For The Moment, After Dark, and Active & Lounge, designed and cut in Nairobi.",
       },
       { property: "og:title", content: "Collections — Luce by Lucia" },
       {
         property: "og:description",
         content:
-          "Made For The Moment and After Dark — two collections designed and cut in Nairobi.",
+          "Made For The Moment, After Dark, and Active & Lounge — collections designed and cut in Nairobi.",
       },
     ],
   }),
@@ -29,13 +30,19 @@ const COLLECTION_META = [
     name: "Made For The Moment",
     image: collectionImg,
     dark: false,
-    copy: "Ivory, blush and stone. Fluid tailoring and knife pleats for the hours that fill your week — meetings, lunches, weddings, everything after.",
+    copy: "Classic lines, signature co-ords and versatile dresses for the hours that fill your week — meetings, lunches, and everything after.",
   },
   {
     name: "After Dark",
     image: afterDarkImg,
     dark: true,
-    copy: "Black, champagne and midnight satin. Bias cuts, sculpted columns and one belted coat dress. Limited runs, released once.",
+    copy: "Bold evening pieces and sculpted silhouettes designed for nights out and memorable moments. Limited runs, released once.",
+  },
+  {
+    name: "Active & Lounge",
+    image: activeLoungeImg,
+    dark: false,
+    copy: "Seamless sets, breathable knits, and effortless daily uniforms built for comfort and movement without compromising on style.",
   },
 ];
 
@@ -46,7 +53,7 @@ function Collections() {
         <p className="eyebrow text-gold-soft">Collections</p>
         <h1 className="display-xl mt-5">The Lookbook</h1>
         <p className="text-ivory/60 mx-auto mt-6 max-w-md text-sm leading-relaxed">
-          Two collections, released seasonally, designed to live together.
+          Curated collections designed to live together and move with you.
         </p>
       </header>
 

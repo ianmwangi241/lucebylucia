@@ -6,7 +6,7 @@
 
 /*
  * LUCE BY LUCIA — design system
- * Hierarchy: Black -> Ivory -> Gold -> Blush/Rose. Gold + rose are accents only.
+ * Hierarchy: Pure White & Soft Gold core, with White and Pink (Blush/Rose) seamlessly integrated at equal prominence.
  */
 
 @theme inline {
@@ -51,14 +51,14 @@
 :root {
   --radius: 0.125rem;
 
-  --ink: oklch(0.15 0.004 60);
-  --ink-soft: oklch(0.24 0.006 60);
-  --ivory: oklch(0.972 0.008 85);
-  --gold: oklch(0.72 0.11 89);
-  --gold-soft: oklch(0.84 0.06 89);
-  --blush: oklch(0.87 0.04 15);
-  --rose: oklch(0.72 0.1 10);
-  --stone: oklch(0.9 0.008 80);
+  --ink: oklch(0.18 0.005 70);
+  --ink-soft: oklch(0.28 0.008 70);
+  --ivory: oklch(1 0 0);
+  --gold: oklch(0.78 0.10 85);
+  --gold-soft: oklch(0.89 0.05 85);
+  --blush: oklch(0.91 0.04 15);
+  --rose: oklch(0.75 0.11 12);
+  --stone: oklch(0.96 0.003 80);
 
   --background: var(--ivory);
   --foreground: var(--ink);
@@ -66,18 +66,18 @@
   --card-foreground: var(--ink);
   --popover: var(--ivory);
   --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: var(--ivory);
-  --secondary: var(--stone);
+  --primary: var(--gold);
+  --primary-foreground: var(--ink);
+  --secondary: var(--blush);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.94 0.006 80);
-  --muted-foreground: oklch(0.5 0.01 70);
-  --accent: var(--gold);
-  --accent-foreground: var(--ink);
+  --muted: oklch(0.96 0.004 80);
+  --muted-foreground: oklch(0.48 0.01 70);
+  --accent: var(--rose);
+  --accent-foreground: var(--ivory);
   --destructive: oklch(0.55 0.19 25);
   --destructive-foreground: var(--ivory);
-  --border: oklch(0.88 0.008 80);
-  --input: oklch(0.88 0.008 80);
+  --border: oklch(0.90 0.006 80);
+  --input: oklch(0.90 0.006 80);
   --ring: var(--gold);
 }
 
@@ -102,8 +102,8 @@
   }
 
   ::selection {
-    background: var(--rose);
-    color: var(--ivory);
+    background: var(--blush);
+    color: var(--ink);
   }
 
   :focus-visible {
@@ -119,6 +119,7 @@
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;
+  color: var(--rose);
 }
 
 @utility display-xl {
@@ -136,28 +137,29 @@
   font-size: clamp(2rem, 4.5vw, 3.5rem);
 }
 
-/* Minimal luxury button: solid ink */
+/* Luxury button styled with primary White & Gold / Rose balance */
 @utility btn-ink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--ink);
-  color: var(--ivory);
+  background: var(--ivory);
+  color: var(--ink);
   padding: 1rem 2.25rem;
   font-size: 0.6875rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--gold);
+  box-shadow: 0 4px 20px color-mix(in oklab, var(--gold) 15%, transparent);
   transition: all 300ms ease;
   &:hover {
-    background: transparent;
-    color: var(--ink);
-    border-color: var(--rose);
+    background: var(--gold);
+    color: var(--ivory);
+    border-color: var(--gold);
   }
 }
 
-/* Outline on dark surfaces with rose-gold hover */
+/* Outline on surfaces highlighting white and pink balance */
 @utility btn-ghost-light {
   display: inline-flex;
   align-items: center;
@@ -169,15 +171,16 @@
   font-size: 0.6875rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  border: 1px solid color-mix(in oklab, var(--ivory) 45%, transparent);
+  border: 1px solid color-mix(in oklab, var(--blush) 60%, transparent);
   transition: all 300ms ease;
   &:hover {
-    border-color: var(--rose);
+    border-color: var(--blush);
+    background: color-mix(in oklab, var(--rose) 15%, transparent);
     color: var(--blush);
   }
 }
 
-/* Gold underline reveal for links */
+/* Gold & Pink underline reveal for links */
 @utility link-gold {
   position: relative;
   transition: color 250ms ease;
@@ -188,7 +191,7 @@
     bottom: -3px;
     height: 1px;
     width: 0;
-    background: var(--gold);
+    background: linear-gradient(90deg, var(--gold), var(--rose));
     transition: width 300ms ease;
   }
   &:hover::after {
@@ -199,7 +202,7 @@
 @utility hairline-gold {
   height: 1px;
   width: 3.5rem;
-  background: linear-gradient(90deg, var(--gold), var(--rose));
+  background: linear-gradient(90deg, var(--gold), var(--blush));
 }
 
 @utility reveal {
@@ -245,11 +248,11 @@
   }
 }
 
-/* Soft romantic glow used once, behind the hero headline */
+/* Romantic blush and gold glow used behind feature elements */
 @utility blush-bloom {
   background: radial-gradient(
     closest-side,
-    color-mix(in oklab, var(--rose) 55%, transparent),
+    color-mix(in oklab, var(--rose) 40%, var(--gold-soft) 40%),
     transparent 70%
   );
   filter: blur(60px);

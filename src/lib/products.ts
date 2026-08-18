@@ -1,12 +1,14 @@
-import p1 from "@/assets/p1.jpg";
-import p2 from "@/assets/p2.jpg";
-import p3 from "@/assets/p3.jpg";
-import p4 from "@/assets/p4.jpg";
-import p5 from "@/assets/p5.jpg";
-import p6 from "@/assets/p6.jpg";
-import detail from "@/assets/detail.jpg";
-import story from "@/assets/story.jpg";
-import collection from "@/assets/collection.jpg";
+import auraSetLong from "@/assets/aura-set-long.jpg";
+import auraSetLong2 from "@/assets/aura-set-long-2.jpg";
+import auraSetLong3 from "@/assets/aura-set-long-3.jpg";
+import auraSetShort1 from "@/assets/aura-set-short-1.jpg";
+import everydaySetLong1 from "@/assets/everyday-set-long-1.jpg";
+import everydaySetShort1 from "@/assets/everyday-set-short-1.jpg";
+import sahara from "@/assets/sahara.jpg";
+import sculptJumpsuit from "@/assets/sculpt-jumpsuit.jpg";
+import signature1 from "@/assets/signature-1.jpg";
+import zola1 from "@/assets/zola-1.jpg";
+import packaging from "@/assets/packaging.jpg";
 
 export type Product = {
   slug: string;
@@ -35,113 +37,147 @@ export const COLOR_SWATCHES: Record<string, string> = {
   Blush: "#E8C7CE",
   Champagne: "#C9A227",
   Stone: "#D8D2C6",
+  Purple: "#9B7EDE",
+  Brown: "#6B4423",
+  Red: "#C8102E",
+  Olive: "#556B2F",
 };
 
 export const products: Product[] = [
   {
-    slug: "lucia-satin-slip-dress",
-    name: "Lucia Satin Slip Dress",
-    price: 8500,
-    category: "Dresses",
-    collection: "After Dark",
-    colors: ["Black", "Blush", "Champagne"],
+    slug: "aura-set-long",
+    name: "Aura Set Long",
+    price: 3500,
+    category: "Two-Piece Sets",
+    collection: "Active & Lounge",
+    colors: ["Blue", "Pink", "Brown"],
     sizes: SIZES,
-    images: [p1, detail, story],
+    images: [auraSetLong, auraSetLong2, auraSetLong3],
     description:
-      "A bias-cut satin slip that moves with you. Cut long and lean with a softly draped cowl and adjustable straps — the piece you will reach for when the evening matters.",
-    material: "94% viscose satin, 6% elastane. Lined bodice. Made in Nairobi.",
-    fit: "True to size with a fluid drape. Model is 176cm and wears a size S.",
+      "A seamless long-sleeve top and matching full-length leggings set designed for maximum comfort and effortless style.",
+      material: "Premium nylon-spandex blend. Moisture-wicking and breathable.",
+    fit: "True to size with high-stretch contour fit.",
     rating: 5,
-    reviews: 12,
+    reviews: 14,
     badge: "Bestseller",
-    soldOutSizes: ["XXL"],
   },
   {
-    slug: "amara-tailored-set",
-    name: "Amara Tailored Set",
-    price: 12900,
-    salePrice: 10900,
+    slug: "aura-set-short",
+    name: "Aura Set Short",
+    price: 3000,
     category: "Two-Piece Sets",
-    collection: "Made For The Moment",
-    colors: ["Ivory", "Stone", "Black"],
+    collection: "Active & Lounge",
+    colors: ["Grey", "Pink", "Brown"],
     sizes: SIZES,
-    images: [p2, collection, detail],
+    images: [auraSetShort1, packaging],
     description:
-      "A softly structured blazer and wide-leg trouser, cut from a fluid crepe that holds its line all day. Wear together, or break it apart and rebuild your week around it.",
-    material: "Recycled polyester crepe with a matte finish. Fully lined blazer.",
-    fit: "Relaxed through the shoulder. Size down for a sharper silhouette.",
+      "A lightweight seamless crop top and biker short set built for everyday movement and warm days.",
+    material: "Soft stretch athletic knit. Machine washable.",
+    fit: "Fitted silhouette with supportive waistband.",
     rating: 5,
-    reviews: 31,
+    reviews: 22,
+    badge: "New",
+  },
+  {
+    slug: "sahara",
+    name: "Sahara",
+    price: 4500,
+    category: "Occasion Wear",
+    collection: "Made For The Moment",
+    colors: ["Purple", "Black", "Brown"],
+    sizes: SIZES,
+    images: [sahara, packaging],
+    description:
+      "A striking statement piece designed with sophisticated contours and premium fabric that hugs your silhouette.",
+    material: "Stretch ribbed polyester blend with reinforced seams.",
+    fit: "Body-hugging tailored fit.",
+    rating: 5,
+    reviews: 19,
+    badge: "Bestseller",
+  },
+  {
+    slug: "everyday-set-long",
+    name: "Everyday Set Long",
+    price: 4000,
+    category: "Two-Piece Sets",
+    collection: "Active & Lounge",
+    colors: ["Black", "Purple"],
+    sizes: SIZES,
+    images: [everydaySetLong1, packaging],
+    description:
+      "Your new go-to ensemble. A comfortable full-length active set crafted for lounging or running errands in style.",
+    material: "Cotton-touch breathable performance fabric.",
+    fit: "Relaxed yet flattering everyday fit.",
+    rating: 4,
+    reviews: 27,
     badge: "Sale",
   },
   {
-    slug: "zola-pleated-maxi-skirt",
-    name: "Zola Pleated Maxi Skirt",
-    price: 6900,
-    category: "Bottoms",
-    collection: "Made For The Moment",
-    colors: ["Blush", "Ivory", "Black"],
+    slug: "everyday-set-short",
+    name: "Everyday Set Short",
+    price: 3500,
+    category: "Two-Piece Sets",
+    collection: "Active & Lounge",
+    colors: ["Black", "Purple"],
     sizes: SIZES,
-    images: [p3, detail],
+    images: [everydaySetShort1, packaging],
     description:
-      "Knife pleats that catch the light with every step. High-rise, elasticated at the back for comfort, and finished at a graceful ankle length.",
-    material: "Pleated satin twill. Hand wash cold, hang to dry.",
-    fit: "Regular fit. Wear high on the natural waist.",
-    rating: 4,
-    reviews: 18,
-    badge: "New",
-  },
-  {
-    slug: "nia-silk-wrap-blouse",
-    name: "Nia Silk Wrap Blouse",
-    price: 7400,
-    category: "Tops",
-    collection: "Made For The Moment",
-    colors: ["Champagne", "Ivory", "Black"],
-    sizes: SIZES,
-    images: [p4, detail],
-    description:
-      "A liquid champagne wrap blouse with a self-tie waist. Understated from the front, quietly dramatic in movement.",
-    material: "100% sandwashed silk. Dry clean recommended.",
-    fit: "Regular fit, adjustable wrap closure.",
+      "The shorter counterpart to our favorite daily uniform, pairing a cropped top with easy-wearing shorts.",
+    material: "Breathable stretch cotton blend.",
+    fit: "True to size with flexible waistbands.",
     rating: 5,
-    reviews: 9,
-    badge: "New",
+    reviews: 11,
   },
   {
-    slug: "imani-belted-coat-dress",
-    name: "Imani Belted Coat Dress",
-    price: 15500,
+    slug: "sculpt-jumpsuit",
+    name: "Sculpt Jumpsuit",
+    price: 4500,
     category: "Occasion Wear",
     collection: "After Dark",
-    colors: ["Black", "Stone"],
+    colors: ["Red", "Black", "Brown"],
     sizes: SIZES,
-    images: [p5, detail],
+    images: [sculptJumpsuit, packaging],
     description:
-      "Double-breasted, waist-defining and cut just below the knee. A single piece that carries you from a boardroom in Westlands to dinner without a change.",
-    material: "Wool-blend suiting with satin lining. Gold-tone buckle.",
-    fit: "Tailored fit. Belted at the natural waist.",
+      "A bold, form-fitting full-length jumpsuit engineered to sculpt your figure with an open-back design detail.",
+    material: "Heavyweight stretch elastane blend.",
+    fit: "Fitted, contouring silhouette.",
     rating: 5,
-    reviews: 24,
+    reviews: 35,
     badge: "Bestseller",
   },
   {
-    slug: "safiya-column-gown",
-    name: "Safiya Column Gown",
-    price: 19800,
-    category: "Occasion Wear",
-    collection: "After Dark",
-    colors: ["Ivory", "Black"],
+    slug: "signature",
+    name: "Signature",
+    price: 3500,
+    category: "Two-Piece Sets",
+    collection: "Made For The Moment",
+    colors: ["Black", "Blue", "Brown"],
     sizes: SIZES,
-    images: [p6, story, detail],
+    images: [signature1, packaging],
     description:
-      "A sculpted column gown in heavyweight crepe, with a clean neckline and an open back finished by hand. Made for the moments that get photographed.",
-    material: "Heavyweight stretch crepe, hand-finished back detail.",
-    fit: "Fitted. Floor length — designed for a 4cm heel.",
+      "A classic branded set featuring clean lines and our signature minimalist aesthetic.",
+    material: "Soft cotton fleece blend.",
+    fit: "Comfortable standard fit.",
+    rating: 4,
+    reviews: 16,
+    badge: "New",
+  },
+  {
+    slug: "zola",
+    name: "Zola",
+    price: 3500,
+    category: "Dresses",
+    collection: "Made For The Moment",
+    colors: ["Purple", "White", "Olive", "Black"],
+    sizes: SIZES,
+    images: [zola1, packaging],
+    description:
+      "An effortless piece designed for versatility, easily transitioning from daytime chic to casual evening outings.",
+    material: "Ribbed knit fabric with comfortable stretch.",
+    fit: "Fluid, flattering drape.",
     rating: 5,
-    reviews: 7,
-    badge: "Low stock",
-    soldOutSizes: ["XS", "XXL"],
+    reviews: 20,
+    badge: "New",
   },
 ];
 
@@ -154,7 +190,7 @@ export const CATEGORIES = [
   "Occasion Wear",
 ];
 
-export const COLLECTIONS = ["Made For The Moment", "After Dark"];
+export const COLLECTIONS = ["Made For The Moment", "After Dark", "Active & Lounge"];
 
 export const formatKsh = (value: number) =>
   `KSh ${value.toLocaleString("en-KE")}`;

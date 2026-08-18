@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import collectionImg from "@/assets/collection.jpg";
-import storyImg from "@/assets/story.jpg";
-import detailImg from "@/assets/detail.jpg";
-import catSets from "@/assets/cat-sets.jpg";
+import signatureImg from "@/assets/signature-1.jpg";
+import sculptImg from "@/assets/sculpt-jumpsuit.jpg";
+import packagingImg from "@/assets/packaging.jpg";
+import auraImg from "@/assets/aura-set-long.jpg";
 
 export const Route = createFileRoute("/journal")({
   head: () => ({
@@ -26,10 +26,10 @@ export const Route = createFileRoute("/journal")({
 
 const POSTS = [
   {
-    title: "Five ways to wear the Amara Set",
+    title: "Five ways to wear the Aura Set",
     category: "Styling",
     date: "August 2026",
-    image: collectionImg,
+    image: signatureImg,
     excerpt:
       "One set, five silhouettes — from a Westlands boardroom to a Karen garden wedding.",
   },
@@ -37,7 +37,7 @@ const POSTS = [
     title: "How we fit a slip dress",
     category: "Behind the seams",
     date: "July 2026",
-    image: storyImg,
+    image: sculptImg,
     excerpt:
       "Bias cuts are unforgiving. Here is how our pattern team drafts one that isn't.",
   },
@@ -45,7 +45,7 @@ const POSTS = [
     title: "On choosing fabric in Nairobi",
     category: "The studio",
     date: "June 2026",
-    image: detailImg,
+    image: packagingImg,
     excerpt:
       "Why we buy in small lots, and what we look for before a roll enters the studio.",
   },
@@ -53,7 +53,7 @@ const POSTS = [
     title: "Dressing for the long season",
     category: "Styling",
     date: "May 2026",
-    image: catSets,
+    image: auraImg,
     excerpt:
       "Layering for a city where mornings are cool and afternoons are not.",
   },
