@@ -36,15 +36,23 @@ const COUNTIES = [
 
 function Checkout() {
   const { lines, subtotal } = useCart();
-  const [county, setCounty] = useState("Nairobi");
+  
+  // Form state mapped directly to DB schema columns
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [deliveryName, setDeliveryName] = useState("");
+  const [deliveryPhone, setDeliveryPhone] = useState("");
+  const [deliveryCounty, setDeliveryCounty] = useState("Nairobi");
+  const [deliveryTown, setDeliveryTown] = useState("");
+  const [deliveryEstate, setDeliveryEstate] = useState("");
+  const [deliveryAddressLine, setDeliveryAddressLine] = useState("");
+  const [deliveryInstructions, setDeliveryInstructions] = useState("");
+
   const [deliveryType, setDeliveryType] = useState("standard");
   const [method, setMethod] = useState("mpesa");
   const [placed, setPlaced] = useState(false);
 
-  // Standard delivery is 500 KSh (only available for Nairobi and its environs).
-  // Matatu delivery cost can default to 550 or standard rates depending on county, let's keep logic clean:
-  const delivery = subtotal === 0 ? 0 : deliveryType === "standard" ? 500 : county === "Nairobi" ? 300 : 550;
-  const total = subtotal + delivery;
+  const shippingFee = subtotal === 0 ? 0 : deliveryType === "standard" ? 500 : deliveryCounty === "Nairobi" ? 300 : 550;
+  const total = subtotal + shippingFee;
 
   if (placed) {
     return (
@@ -75,12 +83,27 @@ function Checkout() {
           }}
         >
           <Fieldset legend="Contact information">
-            <Field label="Full name" name="name" placeholder="e.g. Amina Mohamed" />
-            <Field label="Email address" name="email" type="email" placeholder="e.g. amina@example.com" />
+            <Field 
+              label="Full name" 
+              name="delivery_name" 
+              value={deliveryName} 
+              onChange={(e) => setDeliveryName(e.target.value)}
+              placeholder="e.g. Amina Mohamed" 
+            />
+            <Field 
+              label="Email address" 
+              name="customer_email" 
+              type="email" 
+              value={customerEmail} 
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              placeholder="e.g. amina@example.com" 
+            />
             <Field
               label="Phone (M-Pesa)"
-              name="phone"
+              name="delivery_phone"
               type="tel"
+              value={deliveryPhone}
+              onChange={(e) => setDeliveryPhone(e.target.value)}
               placeholder="07XX XXX XXX"
               pattern="0[17][0-9]{8}"
             />
@@ -90,8 +113,8 @@ function Checkout() {
             <label className="block">
               <span className="eyebrow text-muted-foreground">County</span>
               <select
-                value={county}
-                onChange={(event) => setCounty(event.target.value)}
+                value={deliveryCounty}
+                onChange={(event) => setDeliveryCounty(event.target.value)}
                 className="mt-2 w-full rounded-md border border-input bg-background px-3.5 py-3 text-sm outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold"
               >
                 {COUNTIES.map((item) => (
@@ -101,12 +124,32 @@ function Checkout() {
                 ))}
               </select>
             </label>
-            <Field label="Area / estate" name="area" placeholder="e.g. Kilimani, Argwings Kodhek Rd" />
-            <Field label="Apartment / building name" name="apartment" placeholder="e.g. Sunrise Apartments" required={false} />
-            <Field label="House number / Door number" name="houseNumber" placeholder="e.g. Door 4B or House No. 12" required={false} />
+            <Field 
+              label="Town / City" 
+              name="delivery_town" 
+              value={deliveryTown}
+              onChange={(e) => setDeliveryTown(e.target.value)}
+              placeholder="e.g. Nairobi" 
+            />
+            <Field 
+              label="Estate / Area" 
+              name="delivery_estate" 
+              value={deliveryEstate}
+              onChange={(e) => setDeliveryEstate(e.target.value)}
+              placeholder="e.g. Kilimani, Argwings Kodhek Rd" 
+            />
+            <Field 
+              label="Apartment / Building / House number" 
+              name="delivery_address_line" 
+              value={deliveryAddressLine}
+              onChange={(e) => setDeliveryAddressLine(e.target.value)}
+              placeholder="e.g. Sunrise Apartments, Door 4B" 
+            />
             <Field
-              label="Delivery notes (optional)"
-              name="notes"
+              label="Delivery instructions (optional)"
+              name="delivery_instructions"
+              value={deliveryInstructions}
+              onChange={(e) => setDeliveryInstructions(e.target.value)}
               required={false}
               placeholder="e.g. Leave with reception / Gate color"
             />
@@ -198,7 +241,7 @@ function Checkout() {
 
           <dl className="mt-8 space-y-3 border-t pt-6 text-sm">
             <Row label="Products" value={formatKsh(subtotal)} />
-            <Row label="Delivery" value={formatKsh(delivery)} />
+            <Row label="Delivery" value={formatKsh(shippingFee)} />
           </dl>
           <div className="mt-5 flex items-center justify-between border-t pt-5">
             <span className="eyebrow">Total</span>
@@ -241,6 +284,8 @@ function Field({
   required = true,
   placeholder,
   pattern,
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
@@ -248,6 +293,8 @@ function Field({
   required?: boolean;
   placeholder?: string;
   pattern?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <label className="block">
@@ -258,6 +305,8 @@ function Field({
         required={required}
         placeholder={placeholder}
         pattern={pattern}
+        value={value}
+        onChange={onChange}
         className="mt-2 w-full rounded-md border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-gold focus:ring-1 focus:ring-gold"
       />
     </label>

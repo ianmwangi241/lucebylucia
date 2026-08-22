@@ -4,18 +4,18 @@ import { ArrowRight, Star } from "lucide-react";
 import { ProductCard } from "@/components/site/product-card";
 import { products } from "@/lib/products";
 
-import heroImg from "@/assets/aura-set-long.jpg";
-import collectionImg from "@/assets/signature-1.jpg";
-import storyImg from "@/assets/sculpt-jumpsuit.jpg";
-import afterDarkImg from "@/assets/everyday-set-short-5.jpg";
-import aurasetshort1 from "@/assets/aura-set-short-1.jpg";
-import everydaysetshort4 from "@/assets/everyday-set-long-1.jpg";
-import signature4 from "@/assets/signature-1.jpg";
-import sculpt3 from "@/assets/sculpt-jumpsuit.jpg";
-import zola1 from "@/assets/zola-1.jpg";
-import sahara4 from "@/assets/sahara.jpg";
-import aurasetlong3 from "@/assets/aura-set-long-3.jpg";
-import everydaysetlong1 from "@/assets/everyday-set-long-1.jpg";
+import heroImg from "@/assets/aura-set-long.webp";
+import collectionImg from "@/assets/signature-1.webp";
+import storyImg from "@/assets/sculpt-jumpsuit.webp";
+import afterDarkImg from "@/assets/everyday-set-short-5.webp";
+import aurasetshort1 from "@/assets/aura-set-short-1.webp";
+import everydaysetshort4 from "@/assets/everyday-set-long-1.webp";
+import signature4 from "@/assets/signature-1.webp";
+import sculpt3 from "@/assets/sculpt-jumpsuit.webp";
+import zola1 from "@/assets/zola-1.webp";
+import sahara4 from "@/assets/sahara.webp";
+import aurasetlong3 from "@/assets/aura-set-long-3.webp";
+import everydaysetlong1 from "@/assets/everyday-set-long-1.webp";
 
 export const Route = createFileRoute("/")({
   head: () => ({

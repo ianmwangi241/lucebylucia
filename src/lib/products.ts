@@ -1,14 +1,14 @@
-import auraSetLong from "@/assets/aura-set-long.jpg";
-import auraSetLong2 from "@/assets/aura-set-long-2.jpg";
-import auraSetLong3 from "@/assets/aura-set-long-3.jpg";
-import auraSetShort1 from "@/assets/aura-set-short-1.jpg";
-import everydaySetLong1 from "@/assets/everyday-set-long-1.jpg";
-import everydaySetShort1 from "@/assets/everyday-set-short-1.jpg";
-import sahara from "@/assets/sahara.jpg";
-import sculptJumpsuit from "@/assets/sculpt-jumpsuit.jpg";
-import signature1 from "@/assets/signature-1.jpg";
-import zola1 from "@/assets/zola-1.jpg";
-import packaging from "@/assets/packaging.jpg";
+import auraSetLong from "@/assets/aura-set-long-2.webp";
+import auraSetLong2 from "@/assets/aura-set-long-2.webp";
+import auraSetLong3 from "@/assets/aura-set-long-3.webp";
+import auraSetShort1 from "@/assets/aura-set-short-1.webp";
+import everydaySetLong1 from "@/assets/everyday-set-long-1.webp";
+import everydaySetShort1 from "@/assets/everyday-set-short-1.webp";
+import sahara from "@/assets/sahara.webp";
+import sculptJumpsuit from "@/assets/sculpt-jumpsuit.webp";
+import signature1 from "@/assets/signature-1.webp";
+import zola1 from "@/assets/zola-1.webp";
+import packaging from "@/assets/packaging.webp";
 
 export type Product = {
   slug: string;
