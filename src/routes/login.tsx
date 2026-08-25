@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/account")({
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "My Account — Orders & Wishlist | Luce by Lucia" },
@@ -16,10 +17,45 @@ export const Route = createFileRoute("/account")({
       },
     ],
   }),
-  component: Account,
+  component: Login,
 });
 
-function Account() {
+function Login() {
+    const supabase = createClient();
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSignIn(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      await navigate({
+        to: "/account",
+      });
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className="mx-auto grid max-w-[1200px] gap-12 px-5 py-16 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-24">
       {/* Sign In Section */}
@@ -32,6 +68,11 @@ function Account() {
             Welcome back
           </h1>
           <div className="h-[1px] w-16 bg-[#C5A059] my-6" />
+          {error && (
+            <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
           
           <form
             className="space-y-6 mt-8"
@@ -42,11 +83,13 @@ function Account() {
                 Email address
               </span>
               <input
-                type="email"
-                required
-                placeholder="lucia@example.com"
-                className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
-              />
+              type="email"
+              required
+              placeholder="lucia@example.com"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
+            />
             </label>
             <label className="block">
               <span className="eyebrow text-xs uppercase tracking-wider text-muted-foreground">
@@ -56,11 +99,17 @@ function Account() {
                 type="password"
                 required
                 placeholder="••••••••"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
               />
             </label>
-            <button className="w-full bg-foreground text-background py-4 text-xs uppercase tracking-widest font-medium transition-opacity hover:opacity-90">
-              Sign In
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-foreground text-background py-4 text-xs uppercase tracking-widest font-medium transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
         </div>
