@@ -16,6 +16,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as LinksRouteImport } from './routes/links'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 
@@ -54,6 +55,11 @@ const LinksRoute = LinksRouteImport.update({
   path: '/links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/collections': typeof CollectionsRoute
   '/journal': typeof JournalRoute
   '/links': typeof LinksRoute
+  '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/collections': typeof CollectionsRoute
   '/journal': typeof JournalRoute
   '/links': typeof LinksRoute
+  '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/collections': typeof CollectionsRoute
   '/journal': typeof JournalRoute
   '/links': typeof LinksRoute
+  '/register': typeof RegisterRoute
   '/shop': typeof ShopRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/journal'
     | '/links'
+    | '/register'
     | '/shop'
     | '/product/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/journal'
     | '/links'
+    | '/register'
     | '/shop'
     | '/product/$slug'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/journal'
     | '/links'
+    | '/register'
     | '/shop'
     | '/product/$slug'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   CollectionsRoute: typeof CollectionsRoute
   JournalRoute: typeof JournalRoute
   LinksRoute: typeof LinksRoute
+  RegisterRoute: typeof RegisterRoute
   ShopRoute: typeof ShopRoute
   ProductSlugRoute: typeof ProductSlugRoute
 }
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionsRoute: CollectionsRoute,
   JournalRoute: JournalRoute,
   LinksRoute: LinksRoute,
+  RegisterRoute: RegisterRoute,
   ShopRoute: ShopRoute,
   ProductSlugRoute: ProductSlugRoute,
 }
