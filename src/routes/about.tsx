@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatKsh } from "@/lib/products";
 
-export const Route = createFileRoute("/checkout")({
+export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Checkout — Pay with M-Pesa or Card | Luce by Lucia" },
