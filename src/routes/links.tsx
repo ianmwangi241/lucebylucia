@@ -27,7 +27,7 @@ const INTERNAL = [
   { label: "The After Dark Drop", to: "/collections" as const },
   { label: "Our Story", to: "/about" as const },
   { label: "The Journal", to: "/journal" as const },
-  { label: "Track My Order", to: "/account" as const },
+  { label: "Track My Order", to: "/login" as const },
 ];
 
 const EXTERNAL = [

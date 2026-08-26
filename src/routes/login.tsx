@@ -1,6 +1,7 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/login")({
 });
 
 function Login() {
-    const supabase = createClient();
+  const supabase = createClient();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -48,7 +49,7 @@ function Login() {
       }
 
       await navigate({
-        to: "/account",
+        to: "/login",
       });
     } catch {
       setError("Something went wrong. Please try again.");
@@ -56,6 +57,7 @@ function Login() {
       setLoading(false);
     }
   }
+
   return (
     <div className="mx-auto grid max-w-[1200px] gap-12 px-5 py-16 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:py-24">
       {/* Sign In Section */}
@@ -68,6 +70,7 @@ function Login() {
             Welcome back
           </h1>
           <div className="h-[1px] w-16 bg-[#C5A059] my-6" />
+          
           {error && (
             <div className="mt-6 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
@@ -76,25 +79,34 @@ function Login() {
           
           <form
             className="space-y-6 mt-8"
-            onSubmit={(event) => event.preventDefault()}
+            onSubmit={handleSignIn}
           >
             <label className="block">
               <span className="eyebrow text-xs uppercase tracking-wider text-muted-foreground">
                 Email address
               </span>
               <input
-              type="email"
-              required
-              placeholder="lucia@example.com"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
-            />
+                type="email"
+                required
+                placeholder="lucia@example.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
+              />
             </label>
+
             <label className="block">
-              <span className="eyebrow text-xs uppercase tracking-wider text-muted-foreground">
-                Password
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="eyebrow text-xs uppercase tracking-wider text-muted-foreground">
+                  Password
+                </span>
+                <Link
+                  to="/reset-password"
+                  className="text-xs text-muted-foreground hover:text-[#C5A059] transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 type="password"
                 required
@@ -104,6 +116,7 @@ function Login() {
                 className="focus:border-[#C5A059] mt-2 w-full border-b border-input bg-transparent py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/50"
               />
             </label>
+
             <button
               type="submit"
               disabled={loading}

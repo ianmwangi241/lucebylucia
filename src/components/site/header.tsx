@@ -80,7 +80,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
               <Heart className="size-[18px]" strokeWidth={1.2} />
             </Link>
             <Link
-              to="/account"
+              to="/login"
               aria-label="Account"
               className="hidden sm:inline-flex"
             >
