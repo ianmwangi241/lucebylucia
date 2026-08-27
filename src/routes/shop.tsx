@@ -2,21 +2,51 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/site/product-card";
+import { COLOR_SWATCHES, SIZES } from "@/lib/products";
 import {
-  CATEGORIES,
-  COLLECTIONS,
-  COLOR_SWATCHES,
-  SIZES,
-  products,
-} from "@/lib/products";
+  getCategories,
+  getCollections,
+  getProducts,
+  type ProductSort,
+} from "@/lib/services/product-service";
 
-type Search = { category?: string | undefined };
+type Search = {
+  category?: string | undefined;
+  collection?: string | undefined;
+  sort?: ProductSort | undefined;
+};
+
+const SORT_VALUES: ProductSort[] = ["featured", "newest", "price-asc", "price-desc"];
+const SORT_LABELS: Record<ProductSort, string> = {
+  featured: "Featured",
+  newest: "Newest",
+  "price-asc": "Price: Low to High",
+  "price-desc": "Price: High to Low",
+};
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (search: Record<string, unknown>): Search => ({
-    category:
-      typeof search["category"] === "string" ? search["category"] : undefined,
+  category:
+    typeof search["category"] === "string" ? search["category"] : undefined,
+  collection:
+    typeof search["collection"] === "string" ? search["collection"] : undefined,
+  sort: SORT_VALUES.includes(search["sort"] as ProductSort)
+    ? (search["sort"] as ProductSort)
+    : undefined,
+}),
+  loaderDeps: ({ search }) => ({
+    category: search.category,
+    collection: search.collection,
+    sort: search.sort,
   }),
+  loader: async ({ deps }) => {
+    const [products, categories, collections] = await Promise.all([
+      getProducts({ data: deps }),
+      getCategories(),
+      getCollections(),
+    ]);
+    return { products, categories, collections };
+  },
   head: () => ({
     meta: [
       { title: "Shop All — Dresses, Sets & Occasion Wear | Luce by Lucia" },
@@ -36,61 +66,45 @@ export const Route = createFileRoute("/shop")({
   component: Shop,
 });
 
-const SORTS = [
-  "Featured",
-  "Newest",
-  "Price: Low to High",
-  "Price: High to Low",
-  "Best Selling",
-] as const;
-
 function Shop() {
-  const { category } = Route.useSearch();
-  const [activeCategory, setActiveCategory] = useState(category ?? "All");
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const { products, categories, collections } = Route.useLoaderData();
+
   const [size, setSize] = useState<string | null>(null);
   const [color, setColor] = useState<string | null>(null);
-  const [collection, setCollection] = useState<string | null>(null);
-  const [sort, setSort] = useState<(typeof SORTS)[number]>("Featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const results = useMemo(() => {
-    let list = products.filter((product) => {
-      if (activeCategory === "New Arrivals") return product.badge === "New";
-      if (activeCategory !== "All" && product.category !== activeCategory)
-        return false;
+    return products.filter((product) => {
       if (size && !product.sizes.includes(size)) return false;
       if (color && !product.colors.includes(color)) return false;
-      if (collection && product.collection !== collection) return false;
       return true;
     });
-    const price = (p: (typeof products)[number]) => p.salePrice ?? p.price;
-    if (sort === "Price: Low to High")
-      list = [...list].sort((a, b) => price(a) - price(b));
-    if (sort === "Price: High to Low")
-      list = [...list].sort((a, b) => price(b) - price(a));
-    if (sort === "Best Selling")
-      list = [...list].sort((a, b) => b.reviews - a.reviews);
-    if (sort === "Newest") list = [...list].reverse();
-    return list;
-  }, [activeCategory, size, color, collection, sort]);
+  }, [products, size, color]);
+
+  const setSearch = (patch: Partial<Search>) =>
+    navigate({ search: (prev) => ({ ...prev, ...patch }) });
 
   const clear = () => {
-    setActiveCategory("All");
     setSize(null);
     setColor(null);
-    setCollection(null);
+    navigate({ search: {} });
   };
 
   const filters = (
     <div className="space-y-10">
       <FilterGroup title="Category">
-        {["All", ...CATEGORIES].map((item) => (
+        <Chip active={!search.category} onClick={() => setSearch({ category: undefined })}>
+          All
+        </Chip>
+        {categories.map((item) => (
           <Chip
-            key={item}
-            active={activeCategory === item}
-            onClick={() => setActiveCategory(item)}
+            key={item.id}
+            active={search.category === item.slug}
+            onClick={() => setSearch({ category: item.slug ?? undefined })}
           >
-            {item}
+            {item.name}
           </Chip>
         ))}
       </FilterGroup>
@@ -129,13 +143,16 @@ function Shop() {
       </FilterGroup>
 
       <FilterGroup title="Collection">
-        {COLLECTIONS.map((item) => (
+        <Chip active={!search.collection} onClick={() => setSearch({ collection: undefined })}>
+          All
+        </Chip>
+        {collections.map((item) => (
           <Chip
-            key={item}
-            active={collection === item}
-            onClick={() => setCollection(collection === item ? null : item)}
+            key={item.id}
+            active={search.collection === item.slug}
+            onClick={() => setSearch({ collection: item.slug ?? undefined })}
           >
-            {item}
+            {item.name}
           </Chip>
         ))}
       </FilterGroup>
@@ -155,8 +172,7 @@ function Shop() {
         <p className="eyebrow text-muted-foreground">Shop</p>
         <h1 className="display-lg mt-4">All Pieces</h1>
         <p className="text-muted-foreground mt-4 max-w-md text-sm">
-          Small-run womenswear made in Nairobi. Prices in KSh, delivered
-          nationwide.
+          Small-run womenswear made in Nairobi. Prices in KSh, delivered nationwide.
         </p>
       </header>
 
@@ -178,14 +194,14 @@ function Shop() {
             <label className="flex items-center gap-3 text-[11px] tracking-[0.2em] uppercase">
               <span className="text-muted-foreground">Sort by</span>
               <select
-                value={sort}
-                onChange={(event) =>
-                  setSort(event.target.value as (typeof SORTS)[number])
-                }
+                value={search.sort ?? "featured"}
+                onChange={(event) => setSearch({ sort: event.target.value as ProductSort })}
                 className="border-b bg-transparent py-1 text-[11px] tracking-[0.16em] uppercase outline-none"
               >
-                {SORTS.map((option) => (
-                  <option key={option}>{option}</option>
+                {SORT_VALUES.map((value) => (
+                  <option key={value} value={value}>
+                    {SORT_LABELS[value]}
+                  </option>
                 ))}
               </select>
             </label>
@@ -196,8 +212,7 @@ function Shop() {
               <div className="hairline-gold mx-auto" />
               <p className="font-display mt-6 text-2xl">Nothing here yet</p>
               <p className="text-muted-foreground mt-3 text-sm">
-                Try removing a filter — or ask us on WhatsApp what&apos;s coming
-                next.
+                Try removing a filter — or ask us on WhatsApp what&apos;s coming next.
               </p>
               <button onClick={clear} className="btn-ink mt-8">
                 Clear filters
@@ -213,28 +228,18 @@ function Shop() {
         </div>
       </div>
 
-      {/* Mobile filter drawer */}
       {filtersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="bg-ink/50 absolute inset-0"
-            onClick={() => setFiltersOpen(false)}
-          />
+          <div className="bg-ink/50 absolute inset-0" onClick={() => setFiltersOpen(false)} />
           <div className="bg-background absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between">
               <h2 className="eyebrow">Filters</h2>
-              <button
-                aria-label="Close filters"
-                onClick={() => setFiltersOpen(false)}
-              >
+              <button aria-label="Close filters" onClick={() => setFiltersOpen(false)}>
                 <X className="size-5" strokeWidth={1.2} />
               </button>
             </div>
             <div className="mt-8">{filters}</div>
-            <button
-              onClick={() => setFiltersOpen(false)}
-              className="btn-ink mt-10 w-full"
-            >
+            <button onClick={() => setFiltersOpen(false)} className="btn-ink mt-10 w-full">
               Show {results.length} pieces
             </button>
           </div>
@@ -244,13 +249,7 @@ function Shop() {
   );
 }
 
-function FilterGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
       <h3 className="eyebrow text-muted-foreground">{title}</h3>
