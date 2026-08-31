@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { COLOR_SWATCHES, formatKsh, type Product } from "@/lib/products";
+import { COLOR_SWATCHES, formatKsh } from "@/lib/products";
+import type { Product } from "@/lib/services/product-service";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
