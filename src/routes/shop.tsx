@@ -1,3 +1,4 @@
+// src/routes/shop.tsx
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -26,14 +27,14 @@ const SORT_LABELS: Record<ProductSort, string> = {
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (search: Record<string, unknown>): Search => ({
-  category:
-    typeof search["category"] === "string" ? search["category"] : undefined,
-  collection:
-    typeof search["collection"] === "string" ? search["collection"] : undefined,
-  sort: SORT_VALUES.includes(search["sort"] as ProductSort)
-    ? (search["sort"] as ProductSort)
-    : undefined,
-}),
+    category:
+      typeof search["category"] === "string" ? search["category"] : undefined,
+    collection:
+      typeof search["collection"] === "string" ? search["collection"] : undefined,
+    sort: SORT_VALUES.includes(search["sort"] as ProductSort)
+      ? (search["sort"] as ProductSort)
+      : undefined,
+  }),
   loaderDeps: ({ search }) => ({
     category: search.category,
     collection: search.collection,

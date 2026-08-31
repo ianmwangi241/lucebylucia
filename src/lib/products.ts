@@ -1,3 +1,4 @@
+// src/lib/products.ts
 export const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 export const COLOR_SWATCHES: Record<string, string> = {

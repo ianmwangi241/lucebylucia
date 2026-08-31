@@ -1,7 +1,15 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { formatKsh } from "@/lib/products";
+
+declare global {
+  interface Window {
+    PayHero?: {
+      init: (config: Record<string, unknown>) => void;
+    };
+  }
+}
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -34,10 +42,11 @@ const COUNTIES = [
   "Other county",
 ];
 
+const PAYHERO_SDK_SRC = "https://applet.payherokenya.com/cdn/button_sdk.js?v=3.1";
+
 function Checkout() {
   const { lines, subtotal } = useCart();
-  
-  // Form state mapped directly to DB schema columns
+
   const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryName, setDeliveryName] = useState("");
   const [deliveryPhone, setDeliveryPhone] = useState("");
@@ -50,9 +59,78 @@ function Checkout() {
   const [deliveryType, setDeliveryType] = useState("standard");
   const [method, setMethod] = useState("mpesa");
   const [placed, setPlaced] = useState(false);
+  const [placedFailed, setPlacedFailed] = useState(false);
+
+  // Step control: collect details first, only then reveal the PayHero button
+  const [showPayment, setShowPayment] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const initedRef = useRef(false);
+
+  // Stable order reference for this checkout attempt
+  const [orderReference] = useState(
+    () => `LBL-${Date.now().toString(36).toUpperCase()}`
+  );
 
   const shippingFee = subtotal === 0 ? 0 : deliveryType === "standard" ? 500 : deliveryCounty === "Nairobi" ? 300 : 550;
   const total = subtotal + shippingFee;
+
+  // Load the PayHero SDK once
+  useEffect(() => {
+    if (window.PayHero) {
+      setSdkReady(true);
+      return;
+    }
+    const existing = document.querySelector(`script[src="${PAYHERO_SDK_SRC}"]`);
+    if (existing) {
+      existing.addEventListener("load", () => setSdkReady(true));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = PAYHERO_SDK_SRC;
+    script.async = true;
+    script.onload = () => setSdkReady(true);
+    script.onerror = () => console.error("Failed to load PayHero SDK");
+    document.body.appendChild(script);
+  }, []);
+
+  // Listen for the payment result PayHero posts back via postMessage
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      if (!event.data || typeof event.data !== "object") return;
+      if (!("paymentSuccess" in event.data)) return;
+
+      if (event.data.paymentSuccess) {
+        setPlaced(true);
+      } else {
+        setPlacedFailed(true);
+      }
+    }
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (!showPayment || !sdkReady || initedRef.current || !window.PayHero) return;
+    initedRef.current = true;
+
+    window.PayHero.init({
+      paymentUrl: "https://lipwa.link/11736", 
+      width: "100%",
+      height: "100%",
+      containerId: "payHero",
+      channelID: 11736, 
+      amount: total,
+      phone: deliveryPhone,
+      name: deliveryName,
+      reference: orderReference,
+      buttonName: `Pay ${formatKsh(total)}`,
+      buttonColor: "#1a1a1a",
+      successUrl: null,
+      failedUrl: null,
+      callbackUrl: null,
+    });
+  }, [showPayment, sdkReady, total, deliveryPhone, deliveryName, orderReference]);
 
   if (placed) {
     return (
@@ -76,27 +154,32 @@ function Checkout() {
 
       <div className="mt-12 grid gap-14 lg:grid-cols-[1.2fr_1fr] lg:gap-24">
         <form
+          ref={formRef}
           className="space-y-12"
           onSubmit={(event) => {
             event.preventDefault();
-            setPlaced(true);
+            if (!formRef.current?.checkValidity()) {
+              formRef.current?.reportValidity();
+              return;
+            }
+            setShowPayment(true);
           }}
         >
           <Fieldset legend="Contact information">
-            <Field 
-              label="Full name" 
-              name="delivery_name" 
-              value={deliveryName} 
+            <Field
+              label="Full name"
+              name="delivery_name"
+              value={deliveryName}
               onChange={(e) => setDeliveryName(e.target.value)}
-              placeholder="e.g. Amina Mohamed" 
+              placeholder="e.g. Amina Mohamed"
             />
-            <Field 
-              label="Email address" 
-              name="customer_email" 
-              type="email" 
-              value={customerEmail} 
+            <Field
+              label="Email address"
+              name="customer_email"
+              type="email"
+              value={customerEmail}
               onChange={(e) => setCustomerEmail(e.target.value)}
-              placeholder="e.g. amina@example.com" 
+              placeholder="e.g. amina@example.com"
             />
             <Field
               label="Phone (M-Pesa)"
@@ -124,26 +207,26 @@ function Checkout() {
                 ))}
               </select>
             </label>
-            <Field 
-              label="Town / City" 
-              name="delivery_town" 
+            <Field
+              label="Town / City"
+              name="delivery_town"
               value={deliveryTown}
               onChange={(e) => setDeliveryTown(e.target.value)}
-              placeholder="e.g. Nairobi" 
+              placeholder="e.g. Nairobi"
             />
-            <Field 
-              label="Estate / Area" 
-              name="delivery_estate" 
+            <Field
+              label="Estate / Area"
+              name="delivery_estate"
               value={deliveryEstate}
               onChange={(e) => setDeliveryEstate(e.target.value)}
-              placeholder="e.g. Kilimani, Argwings Kodhek Rd" 
+              placeholder="e.g. Kilimani, Argwings Kodhek Rd"
             />
-            <Field 
-              label="Apartment / Building / House number" 
-              name="delivery_address_line" 
+            <Field
+              label="Apartment / Building / House number"
+              name="delivery_address_line"
               value={deliveryAddressLine}
               onChange={(e) => setDeliveryAddressLine(e.target.value)}
-              placeholder="e.g. Sunrise Apartments, Door 4B" 
+              placeholder="e.g. Sunrise Apartments, Door 4B"
             />
             <Field
               label="Delivery instructions (optional)"
@@ -203,9 +286,34 @@ function Checkout() {
             </p>
           </Fieldset>
 
-          <button type="submit" className="btn-ink w-full">
-            Pay {formatKsh(total)}
-          </button>
+          {!showPayment ? (
+            <button
+              type="submit"
+              disabled={lines.length === 0}
+              className="btn-ink w-full disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Continue to Payment
+            </button>
+          ) : (
+            <div className="space-y-3">
+              {placedFailed && (
+                <p className="text-destructive text-sm">
+                  Payment didn't go through. You can try again below.
+                </p>
+              )}
+              <div id="payHero" />
+              {!sdkReady && (
+                <p className="text-muted-foreground text-xs">Loading payment options…</p>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowPayment(false)}
+                className="link-gold text-[11px] tracking-[0.2em] uppercase"
+              >
+                ← Edit details
+              </button>
+            </div>
+          )}
         </form>
 
         <aside className="bg-secondary/40 h-fit rounded-lg p-7 lg:p-9 border border-border/60">

@@ -1,5 +1,6 @@
+// src/routes/product.$slug.tsx
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Heart, Minus, Plus, Truck } from "lucide-react";
 import { SizeGuide } from "@/components/site/size-guide";
 import { ProductCard } from "@/components/site/product-card";
@@ -13,11 +14,9 @@ export const Route = createFileRoute("/product/$slug")({
     try {
       product = await getProductBySlug({ data: params.slug });
     } catch {
-      // getProductBySlug's .single() throws when no active product matches
       throw notFound();
     }
 
-    // Related items: same category, excluding the current product.
     const sameCategory = product.categorySlug
       ? await getProducts({ data: { category: product.categorySlug } })
       : [];
@@ -69,23 +68,34 @@ export const Route = createFileRoute("/product/$slug")({
   component: ProductPage,
 });
 
-// "Details & Material" and "Size & Fit" used to pull from per-product
-// `material` / `fit` fields that don't exist in the products table.
-// Using placeholder copy here — replace with real fields once/if you
-// add `material` and `fit` columns to `products` in Supabase.
 const ACCORDION = ["Description", "Details & Material", "Size & Fit", "Delivery", "Returns"];
 
 function ProductPage() {
   const { product, related } = Route.useLoaderData();
   const { add } = useCart();
   const [color, setColor] = useState(product.colors[0] ?? "");
-  const [size, setSize] = useState<string | null>(null);
+  const [size, setSize] = useState<string | null>(
+    () => product.sizes.find((s) => !product.soldOutSizes.includes(s)) ?? null
+  );
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
   const [guide, setGuide] = useState(false);
   const [open, setOpen] = useState<string | null>("Description");
 
   const price = product.salePrice ?? product.price;
+
+  const matchedVariant = useMemo(() => {
+    if (product.sizes.length > 0 && !size) return null;
+    return product.variants.find(
+      (v) =>
+        (product.colors.length === 0 || v.color === color) &&
+        (product.sizes.length === 0 || v.sizeCode === size)
+    );
+  }, [product.variants, product.colors.length, product.sizes.length, color, size]);
+
+  const canAdd =
+    product.sizes.length === 0 ||
+    (matchedVariant?.is_available && (matchedVariant?.stock_quantity ?? 0) > 0);
 
   const accordionBody = (section: string) => {
     switch (section) {
@@ -102,6 +112,11 @@ function ProductPage() {
     }
   };
 
+  const handleAdd = () => {
+    if (!canAdd) return;
+    add(product, color, size ?? "", qty);
+  };
+
   return (
     <div className="mx-auto max-w-[1600px] px-5 py-10 lg:px-10 lg:py-16">
       <nav className="text-muted-foreground text-[10px] tracking-[0.22em] uppercase">
@@ -113,7 +128,6 @@ function ProductPage() {
       </nav>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-20">
-        {/* Gallery */}
         <div className="flex flex-col-reverse gap-4 lg:flex-row">
           <div className="flex gap-3 lg:flex-col">
             {product.images.map((image, index) => (
@@ -147,7 +161,6 @@ function ProductPage() {
           </div>
         </div>
 
-        {/* Info */}
         <div className="lg:pt-6">
           {product.collection && (
             <p className="eyebrow text-muted-foreground">{product.collection}</p>
@@ -170,8 +183,6 @@ function ProductPage() {
                 formatKsh(product.price)
               )}
             </p>
-            {/* Ratings removed — no rating/reviews columns in the products
-                table yet. Add them back once that data exists. */}
           </div>
 
           <div className="hairline-gold mt-7" />
@@ -180,7 +191,6 @@ function ProductPage() {
             {product.description}
           </p>
 
-          {/* Colour */}
           {product.colors.length > 0 && (
             <div className="mt-9">
               <p className="eyebrow text-muted-foreground">
@@ -203,7 +213,6 @@ function ProductPage() {
             </div>
           )}
 
-          {/* Size */}
           {product.sizes.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center justify-between">
@@ -238,7 +247,6 @@ function ProductPage() {
             </div>
           )}
 
-          {/* Quantity + add */}
           <div className="mt-8 flex flex-wrap items-stretch gap-3">
             <div className="inline-flex items-center border">
               <button
@@ -258,8 +266,8 @@ function ProductPage() {
               </button>
             </div>
             <button
-              onClick={() => size && add(product, color, size, qty)}
-              disabled={product.sizes.length > 0 && !size}
+              onClick={handleAdd}
+              disabled={!canAdd}
               className="btn-ink flex-1 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {product.sizes.length === 0 || size ? "Add to Bag" : "Select a size"}
@@ -278,7 +286,6 @@ function ProductPage() {
             </p>
           </div>
 
-          {/* Accordion */}
           <div className="mt-8 border-t">
             {ACCORDION.map((section) => (
               <div key={section} className="border-b">
@@ -303,12 +310,8 @@ function ProductPage() {
         </div>
       </div>
 
-      {/* Sticky mobile add */}
       <div className="bg-background/95 fixed inset-x-0 bottom-0 z-30 border-t p-3 lg:hidden">
-        <button
-          onClick={() => size && add(product, color, size, qty)}
-          className="btn-ink w-full"
-        >
+        <button onClick={handleAdd} disabled={!canAdd} className="btn-ink w-full disabled:opacity-40">
           {product.sizes.length === 0 || size
             ? `Add to Bag · ${formatKsh(price * qty)}`
             : "Select a size"}
