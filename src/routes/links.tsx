@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import { createClient } from "@/lib/supabase/client";
 
 export const Route = createFileRoute("/links")({
   head: () => ({
@@ -21,6 +21,17 @@ export const Route = createFileRoute("/links")({
   }),
   component: Links,
 });
+
+const supabase = createClient();
+
+function getStorageUrl(path: string) {
+  return supabase.storage.from("product_images").getPublicUrl(path).data
+    .publicUrl;
+}
+
+// Adjust the path below if "hero" lives in a different folder in your
+// product_images bucket — same convention as journal.tsx/about.tsx.
+const heroImg = getStorageUrl("aura-set-long/aura-set-long.webp");
 
 const INTERNAL = [
   { label: "Shop New In", to: "/shop" as const },
