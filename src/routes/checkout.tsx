@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useCart } from "@/lib/cart";
+import { useCart } from "@/lib/supabase/cart";
 import { formatKsh } from "@/lib/products";
 
 declare global {

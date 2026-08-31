@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, X } from "lucide-react";
-import { useCart } from "@/lib/cart";
+import { useCart } from "@/lib/supabase/cart";
 import { formatKsh } from "@/lib/products";
 
 export function CartDrawer() {

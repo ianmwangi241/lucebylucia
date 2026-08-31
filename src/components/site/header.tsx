@@ -8,7 +8,7 @@ import {
   User,
   X,
 } from "lucide-react";
-import { useCart } from "@/lib/cart";
+import { useCart } from "@/lib/supabase/cart";
 
 const NAV_CATEGORIES = [
   "New Arrivals",

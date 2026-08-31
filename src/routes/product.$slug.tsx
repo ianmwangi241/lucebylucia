@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Heart, Minus, Plus, Truck } from "lucide-react";
 import { SizeGuide } from "@/components/site/size-guide";
 import { ProductCard } from "@/components/site/product-card";
-import { useCart } from "@/lib/cart";
+import { useCart } from "@/lib/supabase/cart";
 import { COLOR_SWATCHES, formatKsh } from "@/lib/products";
 import { getProductBySlug, getProducts } from "@/lib/services/product-service";
 
