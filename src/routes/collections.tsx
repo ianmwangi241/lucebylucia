@@ -1,14 +1,21 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import collectionImg from "@/assets/signature-1.jpg";
-import afterDarkImg from "@/assets/sculpt-jumpsuit.jpg";
-import activeLoungeImg from "@/assets/aura-set-long.jpg";
 import { ProductCard } from "@/components/site/product-card";
-import { products } from "@/lib/products";
+import { getCollections, getProducts } from "@/lib/services/product-service";
 
 export const Route = createFileRoute("/collections")({
+  loader: async () => {
+    const [collections, products] = await Promise.all([
+      getCollections(),
+      getProducts({ data: {} }),
+    ]);
+    return { collections, products };
+  },
   head: () => ({
     meta: [
-      { title: "Collections — Made For The Moment, After Dark & Active & Lounge | Luce by Lucia" },
+      {
+        title:
+          "Collections — Made For The Moment, After Dark & Active & Lounge | Luce by Lucia",
+      },
       {
         name: "description",
         content:
@@ -25,28 +32,19 @@ export const Route = createFileRoute("/collections")({
   component: Collections,
 });
 
-const COLLECTION_META = [
-  {
-    name: "Made For The Moment",
-    image: collectionImg,
-    dark: false,
-    copy: "Classic lines, signature co-ords and versatile dresses for the hours that fill your week — meetings, lunches, and everything after.",
-  },
-  {
-    name: "After Dark",
-    image: afterDarkImg,
-    dark: true,
-    copy: "Bold evening pieces and sculpted silhouettes designed for nights out and memorable moments. Limited runs, released once.",
-  },
-  {
-    name: "Active & Lounge",
-    image: activeLoungeImg,
-    dark: false,
-    copy: "Seamless sets, breathable knits, and effortless daily uniforms built for comfort and movement without compromising on style.",
-  },
-];
+// Theming has no DB equivalent, so dark/light per section stays hardcoded,
+// keyed by the collection's slug in Supabase. Verify these slugs match
+// what's actually in your `collections` table — a slug that doesn't
+// match here just falls back to the light theme, it won't error.
+const COLLECTION_THEME: Record<string, { dark: boolean }> = {
+  "made-for-the-moment": { dark: false },
+  "after-dark": { dark: true },
+  "active-lounge": { dark: false },
+};
 
 function Collections() {
+  const { collections, products } = Route.useLoaderData();
+
   return (
     <>
       <header className="bg-ink text-ivory px-5 py-20 text-center lg:py-28">
@@ -57,39 +55,46 @@ function Collections() {
         </p>
       </header>
 
-      {COLLECTION_META.map((collection) => {
+      {collections.map((collection) => {
+        const dark = COLLECTION_THEME[collection.slug ?? ""]?.dark ?? false;
         const items = products.filter(
-          (product) => product.collection === collection.name,
+          (product) => product.collectionSlug === collection.slug,
         );
+
         return (
           <section
-            key={collection.name}
-            className={collection.dark ? "bg-ink text-ivory" : ""}
+            key={collection.id}
+            className={dark ? "bg-ink text-ivory" : ""}
           >
             <div className="mx-auto max-w-[1600px] px-5 py-20 lg:px-10 lg:py-28">
               <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
-                <img
-                  src={collection.image}
-                  alt={`${collection.name} collection campaign`}
-                  loading="lazy"
-                  className="aspect-[4/5] w-full object-cover"
-                />
+                {collection.image ? (
+                  <img
+                    src={collection.image}
+                    alt={`${collection.name} collection campaign`}
+                    loading="lazy"
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-muted aspect-[4/5] w-full" />
+                )}
                 <div>
                   <p
-                    className={`eyebrow ${collection.dark ? "text-gold-soft" : "text-muted-foreground"}`}
+                    className={`eyebrow ${dark ? "text-gold-soft" : "text-muted-foreground"}`}
                   >
                     Collection
                   </p>
                   <h2 className="display-lg mt-5">{collection.name}</h2>
                   <div className="hairline-gold mt-7" />
                   <p
-                    className={`mt-7 text-sm leading-loose ${collection.dark ? "text-ivory/65" : "text-muted-foreground"}`}
+                    className={`mt-7 text-sm leading-loose ${dark ? "text-ivory/65" : "text-muted-foreground"}`}
                   >
-                    {collection.copy}
+                    {collection.description}
                   </p>
                   <Link
                     to="/shop"
-                    className={collection.dark ? "btn-ghost-light mt-9" : "btn-ink mt-9"}
+                    search={{ collection: collection.slug ?? undefined }}
+                    className={dark ? "btn-ghost-light mt-9" : "btn-ink mt-9"}
                   >
                     Shop {items.length} Pieces
                   </Link>

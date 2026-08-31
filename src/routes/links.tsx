@@ -86,7 +86,7 @@ function Links() {
           ))}
           {EXTERNAL.map((link) => (
             
-              key={link.label}
+              <a key={link.label}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"

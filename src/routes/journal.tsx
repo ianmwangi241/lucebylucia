@@ -1,8 +1,6 @@
+// src/routes/journal.tsx
 import { createFileRoute } from "@tanstack/react-router";
-import signatureImg from "@/assets/signature-1.jpg";
-import sculptImg from "@/assets/sculpt-jumpsuit.jpg";
-import packagingImg from "@/assets/packaging.jpg";
-import auraImg from "@/assets/aura-set-long.jpg";
+import { createClient } from "@/lib/supabase/client";
 
 export const Route = createFileRoute("/journal")({
   head: () => ({
@@ -24,12 +22,19 @@ export const Route = createFileRoute("/journal")({
   component: Journal,
 });
 
+const supabase = createClient();
+
+function getStorageUrl(path: string) {
+  return supabase.storage.from("product_images").getPublicUrl(path).data
+    .publicUrl;
+}
+
 const POSTS = [
   {
     title: "Five ways to wear the Aura Set",
     category: "Styling",
     date: "August 2026",
-    image: signatureImg,
+    image: getStorageUrl("signature/signature-1.webp"),
     excerpt:
       "One set, five silhouettes — from a Westlands boardroom to a Karen garden wedding.",
   },
@@ -37,7 +42,7 @@ const POSTS = [
     title: "How we fit a slip dress",
     category: "Behind the seams",
     date: "July 2026",
-    image: sculptImg,
+    image: getStorageUrl("sculpt/sculpt-jumpsuit.webp"),
     excerpt:
       "Bias cuts are unforgiving. Here is how our pattern team drafts one that isn't.",
   },
@@ -45,7 +50,7 @@ const POSTS = [
     title: "On choosing fabric in Nairobi",
     category: "The studio",
     date: "June 2026",
-    image: packagingImg,
+    image: getStorageUrl("packaging/packaging.webp"),
     excerpt:
       "Why we buy in small lots, and what we look for before a roll enters the studio.",
   },
@@ -53,7 +58,7 @@ const POSTS = [
     title: "Dressing for the long season",
     category: "Styling",
     date: "May 2026",
-    image: auraImg,
+    image: getStorageUrl("aura-set-long/aura-set-long.webp"),
     excerpt:
       "Layering for a city where mornings are cool and afternoons are not.",
   },
