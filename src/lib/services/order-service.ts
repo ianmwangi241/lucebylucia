@@ -29,10 +29,10 @@ export const placeOrder = createServerFn({ method: "POST" })
   .validator((input: PlaceOrderInput) => input)
   .handler(async ({ data: input }) => {
     const supabase = createClient();
-
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
+        user_id: null,
         currency: "KES",
         customer_email: input.customerEmail,
         delivery_name: input.deliveryName,

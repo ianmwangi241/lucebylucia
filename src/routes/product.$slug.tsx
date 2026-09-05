@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Heart, Minus, Plus, Truck } from "lucide-react";
 import { SizeGuide } from "@/components/site/size-guide";
 import { ProductCard } from "@/components/site/product-card";
-import { useCart } from "@/lib/supabase/cart";
+import { useCart } from "@/lib/cart";
 import { COLOR_SWATCHES, formatKsh } from "@/lib/products";
 import { getProductBySlug, getProducts } from "@/lib/services/product-service";
 
@@ -93,9 +93,14 @@ function ProductPage() {
     );
   }, [product.variants, product.colors.length, product.sizes.length, color, size]);
 
-  const canAdd =
-    product.sizes.length === 0 ||
-    (matchedVariant?.is_available && (matchedVariant?.stock_quantity ?? 0) > 0);
+  // A variant must actually exist and be in stock to add to bag — this is
+  // stricter than before because order_items now requires a real
+  // product_variant_id, so "no matched row" means there's nothing to order.
+  const canAdd = Boolean(
+    matchedVariant &&
+      matchedVariant.is_available &&
+      matchedVariant.stock_quantity > 0
+  );
 
   const accordionBody = (section: string) => {
     switch (section) {
@@ -113,8 +118,18 @@ function ProductPage() {
   };
 
   const handleAdd = () => {
-    if (!canAdd) return;
-    add(product, color, size ?? "", qty);
+    if (!canAdd || !matchedVariant) return;
+    add({
+      slug: product.slug,
+      variantId: matchedVariant.id,
+      sku: matchedVariant.sku,
+      name: product.name,
+      image: product.images[0] ?? "",
+      color,
+      size: size ?? "",
+      price: matchedVariant.price ?? price,
+      qty,
+    });
   };
 
   return (

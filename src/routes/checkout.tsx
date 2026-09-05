@@ -1,7 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useCart } from "@/lib/supabase/cart";
+import { useCart } from "@/lib/cart";
 import { formatKsh } from "@/lib/products";
+import { placeOrder, recordPayment } from "@/lib/services/order-service";
 
 declare global {
   interface Window {
@@ -45,7 +46,7 @@ const COUNTIES = [
 const PAYHERO_SDK_SRC = "https://applet.payherokenya.com/cdn/button_sdk.js?v=3.1";
 
 function Checkout() {
-  const { lines, subtotal } = useCart();
+  const { lines, subtotal, clear } = useCart();
 
   const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryName, setDeliveryName] = useState("");
@@ -60,22 +61,20 @@ function Checkout() {
   const [method, setMethod] = useState("mpesa");
   const [placed, setPlaced] = useState(false);
   const [placedFailed, setPlacedFailed] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
+  const [creatingOrder, setCreatingOrder] = useState(false);
 
-  // Step control: collect details first, only then reveal the PayHero button
   const [showPayment, setShowPayment] = useState(false);
   const [sdkReady, setSdkReady] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const initedRef = useRef(false);
 
-  // Stable order reference for this checkout attempt
-  const [orderReference] = useState(
-    () => `LBL-${Date.now().toString(36).toUpperCase()}`
-  );
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderReference, setOrderReference] = useState<string | null>(null);
 
   const shippingFee = subtotal === 0 ? 0 : deliveryType === "standard" ? 500 : deliveryCounty === "Nairobi" ? 300 : 550;
   const total = subtotal + shippingFee;
 
-  // Load the PayHero SDK once
   useEffect(() => {
     if (window.PayHero) {
       setSdkReady(true);
@@ -94,13 +93,24 @@ function Checkout() {
     document.body.appendChild(script);
   }, []);
 
-  // Listen for the payment result PayHero posts back via postMessage
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
       if (!event.data || typeof event.data !== "object") return;
       if (!("paymentSuccess" in event.data)) return;
 
       if (event.data.paymentSuccess) {
+        if (orderId && orderReference) {
+          recordPayment({
+            data: {
+              orderId,
+              amount: total,
+              paymentMethod: method,
+              providerReference: orderReference,
+              status: "success",
+            },
+          }).catch((err) => console.error("Failed to record payment", err));
+        }
+        clear();
         setPlaced(true);
       } else {
         setPlacedFailed(true);
@@ -108,18 +118,18 @@ function Checkout() {
     }
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, []);
+  }, [orderId, orderReference, total, method, clear]);
 
   useEffect(() => {
-    if (!showPayment || !sdkReady || initedRef.current || !window.PayHero) return;
+    if (!showPayment || !sdkReady || initedRef.current || !window.PayHero || !orderReference) return;
     initedRef.current = true;
 
     window.PayHero.init({
-      paymentUrl: "https://lipwa.link/11736", 
+      paymentUrl: "https://lipwa.link/11736",
       width: "100%",
       height: "100%",
       containerId: "payHero",
-      channelID: 11736, 
+      channelID: 11736,
       amount: total,
       phone: deliveryPhone,
       name: deliveryName,
@@ -156,13 +166,50 @@ function Checkout() {
         <form
           ref={formRef}
           className="space-y-12"
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
             if (!formRef.current?.checkValidity()) {
               formRef.current?.reportValidity();
               return;
             }
-            setShowPayment(true);
+            if (lines.length === 0) return;
+
+            setOrderError(null);
+            setCreatingOrder(true);
+            try {
+              const result = await placeOrder({
+                data: {
+                  customerEmail,
+                  deliveryName,
+                  deliveryPhone,
+                  deliveryCounty,
+                  deliveryTown,
+                  deliveryEstate,
+                  deliveryAddressLine,
+                  deliveryInstructions,
+                  shippingFee,
+                  subtotal,
+                  total,
+                  lines: lines.map((l) => ({
+                    variantId: l.variantId,
+                    sku: l.sku,
+                    variantName: `${l.name} — ${l.color} / ${l.size}`,
+                    unitPrice: l.price,
+                    quantity: l.qty,
+                  })),
+                },
+              });
+              setOrderId(result.orderId);
+              setOrderReference(result.orderNumber);
+              setShowPayment(true);
+            } catch (err) {
+              console.error("Failed to create order", err);
+              setOrderError(
+                "We couldn't place your order. Please check your details and try again."
+              );
+            } finally {
+              setCreatingOrder(false);
+            }
           }}
         >
           <Fieldset legend="Contact information">
@@ -286,13 +333,17 @@ function Checkout() {
             </p>
           </Fieldset>
 
+          {orderError && (
+            <p className="text-destructive text-sm">{orderError}</p>
+          )}
+
           {!showPayment ? (
             <button
               type="submit"
-              disabled={lines.length === 0}
+              disabled={lines.length === 0 || creatingOrder}
               className="btn-ink w-full disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Continue to Payment
+              {creatingOrder ? "Placing order…" : "Continue to Payment"}
             </button>
           ) : (
             <div className="space-y-3">

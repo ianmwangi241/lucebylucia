@@ -143,12 +143,6 @@ const revealSection = {
 function Home() {
   const { products, images } = Route.useLoaderData();
 
-  /*
-   * Homepage editorial categories.
-   *
-   * These images are supplied by getHomeImages()
-   * from Supabase Storage.
-   */
   const categoryCards = [
     {
       title: "Sahara",
