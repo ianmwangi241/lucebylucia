@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/site/product-card";
-import { COLOR_SWATCHES, SIZES } from "@/lib/products";
+import { COLOR_SWATCHES, getColorSwatch, SIZES } from "@/lib/products";
 import {
   getCategories,
   getCollections,
@@ -79,7 +79,13 @@ function Shop() {
   const results = useMemo(() => {
     return products.filter((product) => {
       if (size && !product.sizes.includes(size)) return false;
-      if (color && !product.colors.includes(color)) return false;
+      if (color) {
+        const normalizedFilterColor = color.toLowerCase().replace(/\s+/g, "");
+        const matchesColor = product.colors.some(
+          (c) => c.toLowerCase().replace(/\s+/g, "") === normalizedFilterColor
+        );
+        if (!matchesColor) return false;
+      }
       return true;
     });
   }, [products, size, color]);
@@ -136,7 +142,7 @@ function Shop() {
               className={`size-3.5 rounded-full border ${
                 color === item ? "ring-gold ring-1 ring-offset-2" : ""
               }`}
-              style={{ backgroundColor: COLOR_SWATCHES[item] }}
+              style={{ backgroundColor: getColorSwatch(item) }}
             />
             {item}
           </button>

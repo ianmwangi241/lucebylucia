@@ -5,7 +5,7 @@ import { Heart, Minus, Plus, Truck } from "lucide-react";
 import { SizeGuide } from "@/components/site/size-guide";
 import { ProductCard } from "@/components/site/product-card";
 import { useCart } from "@/lib/cart";
-import { COLOR_SWATCHES, formatKsh } from "@/lib/products";
+import { getColorSwatch, formatKsh } from "@/lib/products";
 import { getProductBySlug, getProducts } from "@/lib/services/product-service";
 
 export const Route = createFileRoute("/product/$slug")({
@@ -88,14 +88,11 @@ function ProductPage() {
     if (product.sizes.length > 0 && !size) return null;
     return product.variants.find(
       (v) =>
-        (product.colors.length === 0 || v.color === color) &&
+        (product.colors.length === 0 || v.color.toLowerCase() === color.toLowerCase()) &&
         (product.sizes.length === 0 || v.sizeCode === size)
     );
   }, [product.variants, product.colors.length, product.sizes.length, color, size]);
 
-  // A variant must actually exist and be in stock to add to bag — this is
-  // stricter than before because order_items now requires a real
-  // product_variant_id, so "no matched row" means there's nothing to order.
   const canAdd = Boolean(
     matchedVariant &&
       matchedVariant.is_available &&
@@ -221,7 +218,7 @@ function ProductPage() {
                     className={`size-7 rounded-full border ${
                       color === item ? "ring-gold ring-1 ring-offset-2" : ""
                     }`}
-                    style={{ backgroundColor: COLOR_SWATCHES[item] }}
+                    style={{ backgroundColor: getColorSwatch(item) }}
                   />
                 ))}
               </div>
