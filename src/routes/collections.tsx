@@ -32,10 +32,6 @@ export const Route = createFileRoute("/collections")({
   component: Collections,
 });
 
-// Theming has no DB equivalent, so dark/light per section stays hardcoded,
-// keyed by the collection's slug in Supabase. Verify these slugs match
-// what's actually in your `collections` table — a slug that doesn't
-// match here just falls back to the light theme, it won't error.
 const COLLECTION_THEME: Record<string, { dark: boolean }> = {
   "made-for-the-moment": { dark: false },
   "after-dark": { dark: true },
@@ -56,9 +52,9 @@ function Collections() {
       </header>
 
       {collections.map((collection) => {
-        const dark = COLLECTION_THEME[collection.slug ?? ""]?.dark ?? false;
-        const items = products.filter(
-          (product) => product.collectionSlug === collection.slug,
+        const dark = COLLECTION_THEME[collection.slug]?.dark ?? false;
+        const items = products.filter((product) =>
+          product.collectionSlugs.includes(collection.slug),
         );
 
         return (
@@ -93,7 +89,7 @@ function Collections() {
                   </p>
                   <Link
                     to="/shop"
-                    search={{ collection: collection.slug ?? undefined }}
+                    search={{ collection: collection.slug }}
                     className={dark ? "btn-ghost-light mt-9" : "btn-ink mt-9"}
                   >
                     Shop {items.length} Pieces
@@ -101,11 +97,13 @@ function Collections() {
                 </div>
               </div>
 
-              <div className="mt-16 grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
-                {items.map((product) => (
-                  <ProductCard key={product.slug} product={product} />
-                ))}
-              </div>
+              {items.length > 0 && (
+                <div className="mt-16 grid grid-cols-2 gap-x-4 gap-y-12 lg:grid-cols-4 lg:gap-x-6">
+                  {items.map((product) => (
+                    <ProductCard key={product.slug} product={product} />
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         );

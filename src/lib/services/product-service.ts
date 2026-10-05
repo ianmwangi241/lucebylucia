@@ -3,6 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/lib/supabase/types";
 
+const IMAGE_BUCKET = "product_images";
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -45,6 +47,7 @@ export type Product = {
   category: string;
   categorySlug: string | null;
   collection: string;
+  collectionSlugs: string[];
   colors: string[];
   sizes: string[];
   soldOutSizes: string[];
@@ -57,6 +60,14 @@ export type Product = {
 
 export type ProductDetail = Product & {
   variants: VariantWithSizeCode[];
+};
+
+export type CollectionSummary = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -115,7 +126,7 @@ function attachImageUrls(
     .map((image) => ({
       ...image,
       url: supabase.storage
-        .from("product_images")
+        .from(IMAGE_BUCKET)
         .getPublicUrl(image.storage_path).data.publicUrl,
     }));
 }
@@ -173,6 +184,9 @@ function mapProduct(
     category: firstCategory?.name ?? "Uncategorized",
     categorySlug: firstCategory?.slug ?? null,
     collection: firstCollection?.name ?? "",
+    collectionSlugs: sortedCollections
+      .map((c) => c.collections?.slug)
+      .filter((s): s is string => Boolean(s)),
     colors,
     sizes,
     soldOutSizes,
@@ -263,7 +277,7 @@ export const getProducts = createServerFn({ method: "GET" })
   });
 
 // ---------------------------------------------------------------------------
-// Categories & Collections (for filter chips)
+// Categories & Collections
 // ---------------------------------------------------------------------------
 
 export const getCategories = createServerFn({ method: "GET" }).handler(
@@ -283,17 +297,34 @@ export const getCategories = createServerFn({ method: "GET" }).handler(
 );
 
 export const getCollections = createServerFn({ method: "GET" }).handler(
-  async () => {
+  async (): Promise<CollectionSummary[]> => {
     const supabase = createClient();
 
     const { data, error } = await supabase
       .from("collections")
-      .select("id, name, slug, sort_order")
+      .select(
+        "id, name, slug, description, sort_order, product_images!collections_image_path_fkey ( storage_path )"
+      )
       .eq("is_active", true)
       .order("sort_order", { ascending: true });
 
     if (error) throw error;
 
-    return data;
+    return (data ?? []).map((c) => {
+      const img = c.product_images as unknown as {
+        storage_path: string;
+      } | null;
+
+      return {
+        id: c.id,
+        name: c.name,
+        slug: c.slug,
+        description: c.description,
+        image: img?.storage_path
+          ? supabase.storage.from(IMAGE_BUCKET).getPublicUrl(img.storage_path)
+              .data.publicUrl
+          : "",
+      };
+    });
   }
 );
