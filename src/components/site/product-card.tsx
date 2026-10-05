@@ -52,19 +52,8 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="text-[13px] tracking-[0.1em] uppercase">
             {product.name}
           </h3>
-          <p className="mt-1.5 flex items-center gap-2 text-sm">
-            {product.salePrice ? (
-              <>
-                <span className="text-destructive">
-                  {formatKsh(product.salePrice)}
-                </span>
-                <span className="text-muted-foreground line-through">
-                  {formatKsh(product.price)}
-                </span>
-              </>
-            ) : (
-              formatKsh(product.price)
-            )}
+          <p className="mt-1.5 text-sm">
+            {formatKsh(product.salePrice ?? product.price)}
           </p>
         </div>
       </Link>

@@ -5,21 +5,24 @@ import { ArrowRight, Instagram, Star } from "lucide-react";
 import { ProductCard } from "@/components/site/product-card";
 import { getProducts } from "@/lib/services/product-service";
 import { getHomeImages } from "@/lib/services/home-service";
+import { getActiveCollections } from "@/lib/services/collection-service";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [products, images] = await Promise.all([
+    const [products, images, collections] = await Promise.all([
       getProducts({
         data: {
           sort: "newest",
         },
       }),
       getHomeImages(),
+      getActiveCollections(),
     ]);
 
     return {
       products,
       images,
+      collections,
     };
   },
 
@@ -53,7 +56,6 @@ export const Route = createFileRoute("/")({
 ========================================================= */
 
 const TICKER_ITEMS = [
-  "DESIGNED IN NAIROBI",
   "M-PESA CHECKOUT",
   "NATIONWIDE DELIVERY",
   "PREMIUM READY-TO-WEAR",
@@ -141,42 +143,7 @@ const revealSection = {
 ========================================================= */
 
 function Home() {
-  const { products, images } = Route.useLoaderData();
-
-  const categoryCards = [
-    {
-      title: "Sahara",
-      image: images.sahara,
-    },
-    {
-      title: "Aura Set Short",
-      image: images.auraSetShort,
-    },
-    {
-      title: "Aura Set Long",
-      image: images.auraSetLong,
-    },
-    {
-      title: "Everyday Set Short",
-      image: images.everydaySetShort,
-    },
-    {
-      title: "Zola",
-      image: images.zola,
-    },
-    {
-      title: "Signature",
-      image: images.signature,
-    },
-    {
-      title: "Sculpt Jumpsuit",
-      image: images.sculpt,
-    },
-    {
-      title: "Everyday Set Long",
-      image: images.everydaySetLong,
-    },
-  ];
+  const { products, images, collections } = Route.useLoaderData();
 
   const socialImages = [
     images.auraSetLong,
@@ -414,78 +381,80 @@ function Home() {
       </motion.section>
 
       {/* =====================================================
-          SHOP BY CATEGORY
+          SHOP BY COLLECTION
       ===================================================== */}
 
-      <section className="border-y py-20 lg:py-28">
-        <div className="mx-auto max-w-[1600px] px-5 lg:px-10">
-          <motion.div
-            {...revealSection}
-            variants={fadeUp}
-            className="flex flex-wrap items-end justify-between gap-5"
-          >
-            <div>
-              <p className="eyebrow text-muted-foreground">
-                Explore
-              </p>
-
-              <h2 className="display-lg mt-3">
-                Shop by Category
-              </h2>
-            </div>
-
-            <Link
-              to="/shop"
-              className="link-gold text-[11px] tracking-[0.24em] uppercase"
+      {collections.length > 0 && (
+        <section className="border-y py-20 lg:py-28">
+          <div className="mx-auto max-w-[1600px] px-5 lg:px-10">
+            <motion.div
+              {...revealSection}
+              variants={fadeUp}
+              className="flex flex-wrap items-end justify-between gap-5"
             >
-              View All
-            </Link>
-          </motion.div>
+              <div>
+                <p className="eyebrow text-muted-foreground">
+                  Explore
+                </p>
 
-          <motion.div
-            {...revealSection}
-            variants={stagger}
-            className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4 lg:gap-6"
-          >
-            {categoryCards.map((category) => (
-              <motion.div
-                key={category.title}
-                variants={fadeUp}
+                <h2 className="display-lg mt-3">
+                  Shop by Collection
+                </h2>
+              </div>
+
+              <Link
+                to="/collections"
+                className="link-gold text-[11px] tracking-[0.24em] uppercase"
               >
-                <Link
-                  to="/shop"
-                  search={{
-                    category: category.title,
-                  }}
-                  className="group relative block overflow-hidden"
+                View All
+              </Link>
+            </motion.div>
+
+            <motion.div
+              {...revealSection}
+              variants={stagger}
+              className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4 lg:gap-6"
+            >
+              {collections.map((collection) => (
+                <motion.div
+                  key={collection.id}
+                  variants={fadeUp}
                 >
-                  <img
-                    src={category.image}
-                    alt={`${category.title} collection`}
-                    loading="lazy"
-                    width={900}
-                    height={1200}
-                    className="aspect-[3/4] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                  />
+                  <Link
+                    to="/collections/$slug"
+                    params={{
+                      slug: collection.slug,
+                    }}
+                    className="group relative block overflow-hidden"
+                  >
+                    <img
+                      src={collection.image}
+                      alt={`${collection.name} collection`}
+                      loading="lazy"
+                      width={900}
+                      height={1200}
+                      className="aspect-[3/4] w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                    />
 
-                  <div className="from-ink/85 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                    <div className="from-ink/85 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
 
-                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
-                    <h3 className="text-ivory font-display text-base tracking-[0.12em] uppercase sm:text-xl">
-                      {category.title}
-                    </h3>
+                    <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6">
+                      <h3 className="text-ivory font-display text-base tracking-[0.12em] uppercase sm:text-xl">
+                        {collection.name}
+                      </h3>
 
-                    <span className="text-blush mt-2 inline-flex items-center gap-2 text-[9px] tracking-[0.24em] uppercase opacity-100 transition-opacity duration-300 lg:opacity-0 lg:group-hover:opacity-100">
-                      Shop Category
-                      <ArrowRight className="size-3" />
-                    </span>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+                      <span className="text-blush mt-2 inline-flex items-center gap-2 text-[9px] tracking-[0.24em] uppercase opacity-100 transition-opacity duration-300 lg:opacity-0 lg:group-hover:opacity-100">
+                        Shop Collection
+                        <ArrowRight className="size-3" />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* =====================================================
           NEW ARRIVALS
