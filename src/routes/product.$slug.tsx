@@ -180,21 +180,8 @@ function ProductPage() {
           <h1 className="font-display mt-4 text-4xl leading-tight lg:text-5xl">
             {product.name}
           </h1>
-          <div className="mt-5 flex items-center gap-4">
-            <p className="text-lg">
-              {product.salePrice ? (
-                <>
-                  <span className="text-destructive">
-                    {formatKsh(product.salePrice)}
-                  </span>{" "}
-                  <span className="text-muted-foreground text-sm line-through">
-                    {formatKsh(product.price)}
-                  </span>
-                </>
-              ) : (
-                formatKsh(product.price)
-              )}
-            </p>
+          <div className="mt-5">
+            <p className="text-lg">{formatKsh(price)}</p>
           </div>
 
           <div className="hairline-gold mt-7" />
