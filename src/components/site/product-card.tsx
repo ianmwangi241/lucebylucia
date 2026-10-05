@@ -29,17 +29,8 @@ export function ProductCard({ product }: { product: Product }) {
               className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 group-hover:opacity-100"
             />
           )}
-          {product.badge && (
-            <span
-              className={`absolute top-4 left-4 px-3 py-1 text-[9px] tracking-[0.26em] uppercase ${
-                product.badge === "Sale"
-                  ? "bg-ink text-gold-soft"
-                  : "bg-background/90 text-foreground"
-              }`}
-            >
-              {product.badge}
-            </span>
-          )}
+        
+          
           <span className="bg-background/85 absolute top-3 right-3 grid size-9 place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <Heart className="size-4" strokeWidth={1.2} />
           </span>
